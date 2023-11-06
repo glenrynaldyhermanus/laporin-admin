@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "610053201327",
+    "project_id": "laporin-2a13f",
+    "storage_bucket": "laporin-2a13f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:610053201327:android:c42a8a2df6d1533e02a35a",
+        "android_client_info": {
+          "package_name": "com.laporin.admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC39uTrOLm8eofx-PYRWHpcu6E0hJqPK0c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:610053201327:android:6131915f38dc543802a35a",
+        "android_client_info": {
+          "package_name": "com.laporin.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC39uTrOLm8eofx-PYRWHpcu6E0hJqPK0c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
