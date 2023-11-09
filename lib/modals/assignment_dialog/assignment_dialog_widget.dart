@@ -43,6 +43,9 @@ class _AssignmentDialogWidgetState extends State<AssignmentDialogWidget> {
       _model.users = await actions.getUsersOfBusiness(
         FFAppState().authUser.businessId,
       );
+      setState(() {
+        _model.businessUsers = _model.users!.toList().cast<UsersRow>();
+      });
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
@@ -137,8 +140,9 @@ class _AssignmentDialogWidgetState extends State<AssignmentDialogWidget> {
                               FlutterFlowDropDown<String>(
                                 controller: _model.dropDownValueController ??=
                                     FormFieldController<String>(null),
-                                options:
-                                    _model.users!.map((e) => e.name).toList(),
+                                options: _model.businessUsers
+                                    .map((e) => e.name)
+                                    .toList(),
                                 onChanged: (val) =>
                                     setState(() => _model.dropDownValue = val),
                                 width: double.infinity,
