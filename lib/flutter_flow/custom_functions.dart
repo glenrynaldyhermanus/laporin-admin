@@ -8,72 +8,28 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'lat_lng.dart';
 import 'place.dart';
 import 'uploaded_file.dart';
-import '/backend/backend.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '/auth/firebase_auth/auth_util.dart';
+import '/backend/schema/structs/index.dart';
+import '/backend/supabase/supabase.dart';
+import '/auth/supabase_auth/auth_util.dart';
 
 bool canGoBack(String pageTitle) {
   // if pageTitle contains character '>' return true or else return false
   return pageTitle.contains(' / ');
 }
 
-String getFieldFromReference(
-  DocumentReference fieldRef,
-  List<FieldsRecord> fieldList,
-) {
-  // get field name from fieldList by matching document id
-  String fieldName = '';
-  for (FieldsRecord field in fieldList) {
-    if (field.reference == fieldRef) {
-      fieldName = field.name;
-      break;
-    }
-  }
-  return fieldName;
-}
-
-DocumentReference getReferenceFromFieldName(
+List<FieldsRow>? getReferenceFromFieldName(
   String fieldName,
-  List<FieldsRecord> fields,
+  List<FieldTypesRow> fields,
 ) {
-  // get reference or document id from fieldName search on fields
-  for (final field in fields) {
-    if (field.hasName() && field.name == fieldName) {
-      return field.reference;
-    }
-  }
-  throw Exception('No field with name $fieldName found.');
-}
+  // // get reference or document id from fieldName search on fields
+  // for (final field in fields) {
+  //   if (field.hasName() && field.name == fieldName) {
+  //     return field.reference;
+  //   }
+  // }
+  // throw Exception('No field with name $fieldName found.');
 
-int getFormFieldCount(DocumentReference form) {
-  // get form_fields count from form
-  int count = 0;
-  form.collection('form_fields').get().then((querySnapshot) {
-    count = querySnapshot.size;
-  });
-  return count;
-}
-
-bool isHavingBusiness(List<BusinessRecord>? businessList) {
-  // return true if businessList is not null and not empty else return false
-  if (businessList != null && businessList.isNotEmpty) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-DocumentReference getReferenceFromFormName(
-  String formName,
-  List<FormsRecord> forms,
-) {
-  // get reference or document id from fieldName search on fields
-  for (final form in forms) {
-    if (form.hasName() && form.name == formName) {
-      return form.reference;
-    }
-  }
-  throw Exception('No field with name $formName found.');
+  return null;
 }
 
 String getNameAbbrevation(String name) {
@@ -91,16 +47,15 @@ String getNameAbbrevation(String name) {
   return abbreviation;
 }
 
-DocumentReference getReferenceFromUserName(
-  String userName,
-  List<UsersRecord> users,
-) {
-  for (final user in users) {
-    if (user.hasDisplayName() && user.displayName == userName) {
-      return user.reference;
-    }
-  }
-  throw Exception('No field with name $userName found.');
+UsersRow? getReferenceFromUserName(String userName) {
+  // for (final user in users) {
+  //   if (user.hasDisplayName() && user.displayName == userName) {
+  //     return user.reference;
+  //   }
+  // }
+  // throw Exception('No field with name $userName found.');
+
+  return null;
 }
 
 DateTime startingDate(DateTime timestamp) {
@@ -109,4 +64,13 @@ DateTime startingDate(DateTime timestamp) {
 
 DateTime endingDate(DateTime timestamp) {
   return DateTime(timestamp.year, timestamp.month, timestamp.day, 23, 59, 59);
+}
+
+bool isEven(int index) {
+  // is index even return false, if odd return true
+  if (index % 2 == 0) {
+    return true;
+  } else {
+    return false;
+  }
 }

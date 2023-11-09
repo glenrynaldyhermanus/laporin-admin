@@ -1,3 +1,4 @@
+import '/components/field_option/field_option_widget.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/form_field_controller.dart';
 import 'field_item_widget.dart' show FieldItemWidget;
@@ -17,16 +18,22 @@ class FieldItemModel extends FlutterFlowModel<FieldItemWidget> {
   FocusNode? nameFocusNode;
   TextEditingController? nameController;
   String? Function(BuildContext, String?)? nameControllerValidator;
+  // Model for FieldOption component.
+  late FieldOptionModel fieldOptionModel;
 
   /// Initialization and disposal methods.
 
   @override
-  void initState(BuildContext context) {}
+  void initState(BuildContext context) {
+    fieldOptionModel = createModel(context, () => FieldOptionModel());
+  }
 
   @override
   void dispose() {
     nameFocusNode?.dispose();
     nameController?.dispose();
+
+    fieldOptionModel.dispose();
   }
 
   /// Action blocks are added here.

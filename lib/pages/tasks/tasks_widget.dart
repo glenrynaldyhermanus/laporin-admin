@@ -1,16 +1,17 @@
-import '/backend/backend.dart';
+import '/backend/supabase/supabase.dart';
 import '/components/header/header_widget.dart';
 import '/components/side_bar/side_bar_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/modals/assignment_dialog/assignment_dialog_widget.dart';
-import '/modals/new_task_dialog/new_task_dialog_widget.dart';
+import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:aligned_tooltip/aligned_tooltip.dart';
 import 'package:aligned_dialog/aligned_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 import 'tasks_model.dart';
 export 'tasks_model.dart';
 
@@ -52,6 +53,8 @@ class _TasksWidgetState extends State<TasksWidget> {
       );
     }
 
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () => _model.unfocusNode.canRequestFocus
           ? FocusScope.of(context).requestFocus(_model.unfocusNode)
@@ -68,9 +71,7 @@ class _TasksWidgetState extends State<TasksWidget> {
               wrapWithModel(
                 model: _model.sideBarModel,
                 updateCallback: () => setState(() {}),
-                child: const SideBarWidget(
-                  pagTitle: 'Task Management',
-                ),
+                child: const SideBarWidget(),
               ),
               Expanded(
                 child: Container(
@@ -85,102 +86,25 @@ class _TasksWidgetState extends State<TasksWidget> {
                       wrapWithModel(
                         model: _model.headerModel,
                         updateCallback: () => setState(() {}),
-                        child: const HeaderWidget(
-                          pageTitle: 'Task Management',
-                        ),
+                        child: const HeaderWidget(),
                       ),
                       Expanded(
                         child: Column(
                           mainAxisSize: MainAxisSize.max,
                           children: [
-                            Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  32.0, 24.0, 32.0, 16.0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Builder(
-                                    builder: (context) => FFButtonWidget(
-                                      onPressed: () async {
-                                        await showAlignedDialog(
-                                          context: context,
-                                          isGlobal: true,
-                                          avoidOverflow: false,
-                                          targetAnchor: const AlignmentDirectional(
-                                                  0.0, 0.0)
-                                              .resolve(
-                                                  Directionality.of(context)),
-                                          followerAnchor: const AlignmentDirectional(
-                                                  0.0, 0.0)
-                                              .resolve(
-                                                  Directionality.of(context)),
-                                          builder: (dialogContext) {
-                                            return Material(
-                                              color: Colors.transparent,
-                                              child: GestureDetector(
-                                                onTap: () => _model.unfocusNode
-                                                        .canRequestFocus
-                                                    ? FocusScope.of(context)
-                                                        .requestFocus(
-                                                            _model.unfocusNode)
-                                                    : FocusScope.of(context)
-                                                        .unfocus(),
-                                                child: SizedBox(
-                                                  height:
-                                                      MediaQuery.sizeOf(context)
-                                                              .height *
-                                                          0.7,
-                                                  child: const NewTaskDialogWidget(),
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ).then((value) => setState(() {}));
-                                      },
-                                      text: 'New Task',
-                                      icon: const Icon(
-                                        Icons.add_circle,
-                                        size: 15.0,
-                                      ),
-                                      options: FFButtonOptions(
-                                        height: 40.0,
-                                        padding: const EdgeInsetsDirectional.fromSTEB(
-                                            24.0, 0.0, 24.0, 0.0),
-                                        iconPadding:
-                                            const EdgeInsetsDirectional.fromSTEB(
-                                                0.0, 0.0, 0.0, 0.0),
-                                        color: FlutterFlowTheme.of(context)
-                                            .primary,
-                                        textStyle: FlutterFlowTheme.of(context)
-                                            .titleSmall
-                                            .override(
-                                              fontFamily: 'Montserrat',
-                                              color: Colors.white,
-                                            ),
-                                        elevation: 0.0,
-                                        borderSide: const BorderSide(
-                                          color: Colors.transparent,
-                                          width: 1.0,
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(24.0),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsetsDirectional.fromSTEB(
-                                    32.0, 0.0, 32.0, 32.0),
+                                    20.0, 0.0, 20.0, 0.0),
                                 child: Container(
                                   width: double.infinity,
                                   height: 100.0,
                                   decoration: BoxDecoration(
                                     color: FlutterFlowTheme.of(context)
                                         .primaryBackground,
-                                    borderRadius: BorderRadius.circular(16.0),
+                                    border: Border.all(
+                                      color: const Color(0x19636F81),
+                                    ),
                                   ),
                                   child: Column(
                                     mainAxisSize: MainAxisSize.max,
@@ -190,15 +114,12 @@ class _TasksWidgetState extends State<TasksWidget> {
                                         height: 44.0,
                                         decoration: BoxDecoration(
                                           color: FlutterFlowTheme.of(context)
-                                              .accent1,
-                                          borderRadius: const BorderRadius.only(
-                                            bottomLeft: Radius.circular(0.0),
-                                            bottomRight: Radius.circular(0.0),
-                                            topLeft: Radius.circular(16.0),
-                                            topRight: Radius.circular(16.0),
+                                              .primaryBackground,
+                                          border: Border.all(
+                                            color: const Color(0x19636F81),
                                           ),
                                         ),
-                                        child: Row(
+                                        child: Column(
                                           mainAxisSize: MainAxisSize.max,
                                           children: [
                                             Expanded(
@@ -206,86 +127,97 @@ class _TasksWidgetState extends State<TasksWidget> {
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: [
                                                   Expanded(
-                                                    child: Text(
-                                                      'UUID',
-                                                      style:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodyMedium,
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Text(
+                                                            'UUID',
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .bodySmall,
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Text(
+                                                            'Name',
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .bodySmall,
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Text(
+                                                            'Description',
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .bodySmall,
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Text(
+                                                            'Form',
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .bodySmall,
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Text(
+                                                            'Location',
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .bodySmall,
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Text(
+                                                            'Due Date',
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .bodySmall,
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Text(
+                                                            'Status',
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .bodySmall,
+                                                          ),
+                                                        ),
+                                                      ]
+                                                          .divide(const SizedBox(
+                                                              width: 16.0))
+                                                          .around(const SizedBox(
+                                                              width: 16.0)),
                                                     ),
                                                   ),
-                                                  Expanded(
-                                                    child: Text(
-                                                      'Name',
-                                                      style:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodyMedium,
-                                                    ),
+                                                  Container(
+                                                    width: 160.0,
+                                                    decoration: const BoxDecoration(),
                                                   ),
-                                                  Expanded(
-                                                    child: Text(
-                                                      'Description',
-                                                      style:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodyMedium,
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Text(
-                                                      'Form',
-                                                      style:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodyMedium,
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Text(
-                                                      'Location',
-                                                      style:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodyMedium,
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Text(
-                                                      'Due Date',
-                                                      style:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodyMedium,
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Text(
-                                                      'Status',
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodyMedium,
-                                                    ),
-                                                  ),
-                                                ]
-                                                    .divide(
-                                                        const SizedBox(width: 16.0))
-                                                    .around(
-                                                        const SizedBox(width: 16.0)),
+                                                ],
                                               ),
                                             ),
-                                            Container(
-                                              width: 160.0,
-                                              decoration: const BoxDecoration(),
+                                            const Divider(
+                                              height: 1.0,
+                                              thickness: 1.0,
+                                              color: Color(0x32636F81),
                                             ),
                                           ],
                                         ),
                                       ),
-                                      StreamBuilder<List<TasksRecord>>(
-                                        stream: queryTasksRecord(),
+                                      FutureBuilder<List<TasksRow>>(
+                                        future: TasksTable().queryRows(
+                                          queryFn: (q) => q.eq(
+                                            'business_id',
+                                            FFAppState().authUser.businessId,
+                                          ),
+                                        ),
                                         builder: (context, snapshot) {
                                           // Customize what your widget looks like when it's loading.
                                           if (!snapshot.hasData) {
@@ -297,404 +229,426 @@ class _TasksWidgetState extends State<TasksWidget> {
                                               ),
                                             );
                                           }
-                                          List<TasksRecord>
-                                              columnTasksRecordList =
+                                          List<TasksRow> columnTasksRowList =
                                               snapshot.data!;
                                           return Column(
                                             mainAxisSize: MainAxisSize.max,
                                             children: List.generate(
-                                                columnTasksRecordList.length,
+                                                columnTasksRowList.length,
                                                 (columnIndex) {
-                                              final columnTasksRecord =
-                                                  columnTasksRecordList[
+                                              final columnTasksRow =
+                                                  columnTasksRowList[
                                                       columnIndex];
-                                              return Column(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsetsDirectional
-                                                            .fromSTEB(0.0, 8.0,
-                                                                0.0, 8.0),
-                                                    child: Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.max,
-                                                      children: [
-                                                        Expanded(
+                                              return Container(
+                                                width: double.infinity,
+                                                decoration: BoxDecoration(
+                                                  color: functions
+                                                          .isEven(columnIndex)
+                                                      ? FlutterFlowTheme.of(
+                                                              context)
+                                                          .primaryBackground
+                                                      : FlutterFlowTheme.of(
+                                                              context)
+                                                          .secondaryBackground,
+                                                  border: Border.all(
+                                                    color: const Color(0x0E636F81),
+                                                  ),
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsetsDirectional
+                                                      .fromSTEB(
+                                                          0.0, 16.0, 0.0, 16.0),
+                                                  child: Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.max,
+                                                    children: [
+                                                      Expanded(
+                                                        child: Row(
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
+                                                          children: [
+                                                            Expanded(
+                                                              child: Text(
+                                                                columnTasksRow
+                                                                    .uuid,
+                                                                maxLines: 1,
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .bodySmall,
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              child:
+                                                                  AlignedTooltip(
+                                                                content:
+                                                                    Padding(
+                                                                        padding: const EdgeInsetsDirectional.fromSTEB(
+                                                                            4.0,
+                                                                            4.0,
+                                                                            4.0,
+                                                                            4.0),
+                                                                        child:
+                                                                            Text(
+                                                                          columnTasksRow
+                                                                              .name,
+                                                                          style:
+                                                                              FlutterFlowTheme.of(context).bodyLarge,
+                                                                        )),
+                                                                offset: 4.0,
+                                                                preferredDirection:
+                                                                    AxisDirection
+                                                                        .down,
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8.0),
+                                                                backgroundColor:
+                                                                    FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .secondaryBackground,
+                                                                elevation: 4.0,
+                                                                tailBaseWidth:
+                                                                    24.0,
+                                                                tailLength:
+                                                                    12.0,
+                                                                waitDuration:
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            100),
+                                                                showDuration:
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            1000),
+                                                                triggerMode:
+                                                                    TooltipTriggerMode
+                                                                        .tap,
+                                                                child: Text(
+                                                                  columnTasksRow
+                                                                      .name,
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .start,
+                                                                  style: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .bodySmall,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              child:
+                                                                  AlignedTooltip(
+                                                                content:
+                                                                    Padding(
+                                                                        padding: const EdgeInsetsDirectional.fromSTEB(
+                                                                            4.0,
+                                                                            4.0,
+                                                                            4.0,
+                                                                            4.0),
+                                                                        child:
+                                                                            Text(
+                                                                          columnTasksRow
+                                                                              .description!,
+                                                                          style:
+                                                                              FlutterFlowTheme.of(context).bodyLarge,
+                                                                        )),
+                                                                offset: 4.0,
+                                                                preferredDirection:
+                                                                    AxisDirection
+                                                                        .down,
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8.0),
+                                                                backgroundColor:
+                                                                    FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .secondaryBackground,
+                                                                elevation: 4.0,
+                                                                tailBaseWidth:
+                                                                    24.0,
+                                                                tailLength:
+                                                                    12.0,
+                                                                waitDuration:
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            100),
+                                                                showDuration:
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            1500),
+                                                                triggerMode:
+                                                                    TooltipTriggerMode
+                                                                        .tap,
+                                                                child: Text(
+                                                                  columnTasksRow
+                                                                      .description!
+                                                                      .maybeHandleOverflow(
+                                                                    maxChars:
+                                                                        15,
+                                                                    replacement:
+                                                                        '…',
+                                                                  ),
+                                                                  style: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .bodySmall,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              child: FutureBuilder<
+                                                                  List<
+                                                                      FormsRow>>(
+                                                                future: FormsTable()
+                                                                    .querySingleRow(
+                                                                  queryFn:
+                                                                      (q) =>
+                                                                          q.eq(
+                                                                    'id',
+                                                                    columnTasksRow
+                                                                        .formId,
+                                                                  ),
+                                                                ),
+                                                                builder: (context,
+                                                                    snapshot) {
+                                                                  // Customize what your widget looks like when it's loading.
+                                                                  if (!snapshot
+                                                                      .hasData) {
+                                                                    return Center(
+                                                                      child:
+                                                                          SizedBox(
+                                                                        width:
+                                                                            50.0,
+                                                                        height:
+                                                                            50.0,
+                                                                        child:
+                                                                            SpinKitFoldingCube(
+                                                                          color:
+                                                                              FlutterFlowTheme.of(context).primary,
+                                                                          size:
+                                                                              50.0,
+                                                                        ),
+                                                                      ),
+                                                                    );
+                                                                  }
+                                                                  List<FormsRow>
+                                                                      textFormsRowList =
+                                                                      snapshot
+                                                                          .data!;
+                                                                  final textFormsRow = textFormsRowList
+                                                                          .isNotEmpty
+                                                                      ? textFormsRowList
+                                                                          .first
+                                                                      : null;
+                                                                  return Text(
+                                                                    textFormsRow!
+                                                                        .name,
+                                                                    style: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodySmall,
+                                                                  );
+                                                                },
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              child:
+                                                                  AlignedTooltip(
+                                                                content:
+                                                                    Padding(
+                                                                        padding: const EdgeInsetsDirectional.fromSTEB(
+                                                                            4.0,
+                                                                            4.0,
+                                                                            4.0,
+                                                                            4.0),
+                                                                        child:
+                                                                            Text(
+                                                                          columnTasksRow
+                                                                              .location!,
+                                                                          style:
+                                                                              FlutterFlowTheme.of(context).bodyLarge,
+                                                                        )),
+                                                                offset: 4.0,
+                                                                preferredDirection:
+                                                                    AxisDirection
+                                                                        .down,
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8.0),
+                                                                backgroundColor:
+                                                                    FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .secondaryBackground,
+                                                                elevation: 4.0,
+                                                                tailBaseWidth:
+                                                                    24.0,
+                                                                tailLength:
+                                                                    12.0,
+                                                                waitDuration:
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            100),
+                                                                showDuration:
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            1500),
+                                                                triggerMode:
+                                                                    TooltipTriggerMode
+                                                                        .tap,
+                                                                child: Text(
+                                                                  columnTasksRow
+                                                                      .location!
+                                                                      .maybeHandleOverflow(
+                                                                    maxChars:
+                                                                        15,
+                                                                    replacement:
+                                                                        '…',
+                                                                  ),
+                                                                  style: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .bodySmall,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              child: Text(
+                                                                dateTimeFormat(
+                                                                    'd/M h:mm a',
+                                                                    columnTasksRow
+                                                                        .dueAt!),
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .bodySmall,
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              child: Text(
+                                                                valueOrDefault<
+                                                                    String>(
+                                                                  columnTasksRow
+                                                                      .status
+                                                                      ?.toString(),
+                                                                  '1',
+                                                                ),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .bodySmall,
+                                                              ),
+                                                            ),
+                                                          ]
+                                                              .divide(const SizedBox(
+                                                                  width: 16.0))
+                                                              .around(const SizedBox(
+                                                                  width: 16.0)),
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        width: 160.0,
+                                                        decoration:
+                                                            const BoxDecoration(),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                                      0.0,
+                                                                      0.0,
+                                                                      16.0,
+                                                                      0.0),
                                                           child: Row(
                                                             mainAxisSize:
                                                                 MainAxisSize
                                                                     .max,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .end,
                                                             children: [
-                                                              Expanded(
-                                                                child: Text(
-                                                                  columnTasksRecord
-                                                                      .reference
-                                                                      .id,
-                                                                  maxLines: 1,
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .bodyMedium,
-                                                                ),
-                                                              ),
-                                                              Expanded(
-                                                                child:
-                                                                    AlignedTooltip(
-                                                                  content:
-                                                                      Padding(
-                                                                          padding: const EdgeInsetsDirectional.fromSTEB(
-                                                                              4.0,
-                                                                              4.0,
-                                                                              4.0,
-                                                                              4.0),
-                                                                          child:
-                                                                              Text(
-                                                                            columnTasksRecord.name,
-                                                                            style:
-                                                                                FlutterFlowTheme.of(context).bodyLarge,
-                                                                          )),
-                                                                  offset: 4.0,
-                                                                  preferredDirection:
-                                                                      AxisDirection
-                                                                          .down,
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              8.0),
-                                                                  backgroundColor:
-                                                                      FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .secondaryBackground,
-                                                                  elevation:
-                                                                      4.0,
-                                                                  tailBaseWidth:
-                                                                      24.0,
-                                                                  tailLength:
-                                                                      12.0,
-                                                                  waitDuration:
-                                                                      const Duration(
-                                                                          milliseconds:
-                                                                              100),
-                                                                  showDuration:
-                                                                      const Duration(
-                                                                          milliseconds:
-                                                                              1000),
-                                                                  triggerMode:
-                                                                      TooltipTriggerMode
-                                                                          .tap,
-                                                                  child: Text(
-                                                                    columnTasksRecord
-                                                                        .name,
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .start,
-                                                                    style: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .bodyMedium,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Expanded(
-                                                                child:
-                                                                    AlignedTooltip(
-                                                                  content:
-                                                                      Padding(
-                                                                          padding: const EdgeInsetsDirectional.fromSTEB(
-                                                                              4.0,
-                                                                              4.0,
-                                                                              4.0,
-                                                                              4.0),
-                                                                          child:
-                                                                              Text(
-                                                                            columnTasksRecord.description,
-                                                                            style:
-                                                                                FlutterFlowTheme.of(context).bodyLarge,
-                                                                          )),
-                                                                  offset: 4.0,
-                                                                  preferredDirection:
-                                                                      AxisDirection
-                                                                          .down,
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              8.0),
-                                                                  backgroundColor:
-                                                                      FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .secondaryBackground,
-                                                                  elevation:
-                                                                      4.0,
-                                                                  tailBaseWidth:
-                                                                      24.0,
-                                                                  tailLength:
-                                                                      12.0,
-                                                                  waitDuration:
-                                                                      const Duration(
-                                                                          milliseconds:
-                                                                              100),
-                                                                  showDuration:
-                                                                      const Duration(
-                                                                          milliseconds:
-                                                                              1500),
-                                                                  triggerMode:
-                                                                      TooltipTriggerMode
-                                                                          .tap,
-                                                                  child: Text(
-                                                                    columnTasksRecord
-                                                                        .description
-                                                                        .maybeHandleOverflow(
-                                                                      maxChars:
-                                                                          15,
-                                                                      replacement:
-                                                                          '…',
-                                                                    ),
-                                                                    style: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .bodyMedium,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Expanded(
-                                                                child: StreamBuilder<
-                                                                    FormsRecord>(
-                                                                  stream: FormsRecord
-                                                                      .getDocument(
-                                                                          columnTasksRecord
-                                                                              .form!),
-                                                                  builder: (context,
-                                                                      snapshot) {
-                                                                    // Customize what your widget looks like when it's loading.
-                                                                    if (!snapshot
-                                                                        .hasData) {
-                                                                      return Center(
-                                                                        child:
-                                                                            SizedBox(
-                                                                          width:
-                                                                              50.0,
-                                                                          height:
-                                                                              50.0,
-                                                                          child:
-                                                                              SpinKitFoldingCube(
+                                                              if (columnTasksRow
+                                                                      .status ==
+                                                                  0)
+                                                                Builder(
+                                                                  builder:
+                                                                      (context) =>
+                                                                          FFButtonWidget(
+                                                                    onPressed:
+                                                                        () async {
+                                                                      await showAlignedDialog(
+                                                                        context:
+                                                                            context,
+                                                                        isGlobal:
+                                                                            true,
+                                                                        avoidOverflow:
+                                                                            false,
+                                                                        targetAnchor:
+                                                                            const AlignmentDirectional(0.0, 0.0).resolve(Directionality.of(context)),
+                                                                        followerAnchor:
+                                                                            const AlignmentDirectional(0.0, 0.0).resolve(Directionality.of(context)),
+                                                                        builder:
+                                                                            (dialogContext) {
+                                                                          return Material(
                                                                             color:
-                                                                                FlutterFlowTheme.of(context).primary,
-                                                                            size:
-                                                                                50.0,
-                                                                          ),
-                                                                        ),
-                                                                      );
-                                                                    }
-                                                                    final textFormsRecord =
-                                                                        snapshot
-                                                                            .data!;
-                                                                    return Text(
-                                                                      textFormsRecord
-                                                                          .name,
-                                                                      style: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .bodyMedium,
-                                                                    );
-                                                                  },
-                                                                ),
-                                                              ),
-                                                              Expanded(
-                                                                child:
-                                                                    AlignedTooltip(
-                                                                  content:
-                                                                      Padding(
-                                                                          padding: const EdgeInsetsDirectional.fromSTEB(
-                                                                              4.0,
-                                                                              4.0,
-                                                                              4.0,
-                                                                              4.0),
-                                                                          child:
-                                                                              Text(
-                                                                            columnTasksRecord.location,
-                                                                            style:
-                                                                                FlutterFlowTheme.of(context).bodyLarge,
-                                                                          )),
-                                                                  offset: 4.0,
-                                                                  preferredDirection:
-                                                                      AxisDirection
-                                                                          .down,
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              8.0),
-                                                                  backgroundColor:
-                                                                      FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .secondaryBackground,
-                                                                  elevation:
-                                                                      4.0,
-                                                                  tailBaseWidth:
-                                                                      24.0,
-                                                                  tailLength:
-                                                                      12.0,
-                                                                  waitDuration:
-                                                                      const Duration(
-                                                                          milliseconds:
-                                                                              100),
-                                                                  showDuration:
-                                                                      const Duration(
-                                                                          milliseconds:
-                                                                              1500),
-                                                                  triggerMode:
-                                                                      TooltipTriggerMode
-                                                                          .tap,
-                                                                  child: Text(
-                                                                    columnTasksRecord
-                                                                        .location
-                                                                        .maybeHandleOverflow(
-                                                                      maxChars:
-                                                                          15,
-                                                                      replacement:
-                                                                          '…',
-                                                                    ),
-                                                                    style: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .bodyMedium,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Expanded(
-                                                                child: Text(
-                                                                  dateTimeFormat(
-                                                                      'M/d H:mm',
-                                                                      columnTasksRecord
-                                                                          .due!),
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .bodyMedium,
-                                                                ),
-                                                              ),
-                                                              Expanded(
-                                                                child: Text(
-                                                                  columnTasksRecord
-                                                                      .status,
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .bodyMedium,
-                                                                ),
-                                                              ),
-                                                            ]
-                                                                .divide(const SizedBox(
-                                                                    width:
-                                                                        16.0))
-                                                                .around(const SizedBox(
-                                                                    width:
-                                                                        16.0)),
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          width: 160.0,
-                                                          decoration:
-                                                              const BoxDecoration(),
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        0.0,
-                                                                        0.0,
-                                                                        16.0,
-                                                                        0.0),
-                                                            child: Row(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .max,
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .end,
-                                                              children: [
-                                                                if (columnTasksRecord
-                                                                        .status ==
-                                                                    'New')
-                                                                  Builder(
-                                                                    builder:
-                                                                        (context) =>
-                                                                            FFButtonWidget(
-                                                                      onPressed:
-                                                                          () async {
-                                                                        await showAlignedDialog(
-                                                                          context:
-                                                                              context,
-                                                                          isGlobal:
-                                                                              true,
-                                                                          avoidOverflow:
-                                                                              false,
-                                                                          targetAnchor:
-                                                                              const AlignmentDirectional(0.0, 0.0).resolve(Directionality.of(context)),
-                                                                          followerAnchor:
-                                                                              const AlignmentDirectional(0.0, 0.0).resolve(Directionality.of(context)),
-                                                                          builder:
-                                                                              (dialogContext) {
-                                                                            return Material(
-                                                                              color: Colors.transparent,
-                                                                              child: GestureDetector(
-                                                                                onTap: () => _model.unfocusNode.canRequestFocus ? FocusScope.of(context).requestFocus(_model.unfocusNode) : FocusScope.of(context).unfocus(),
-                                                                                child: SizedBox(
-                                                                                  height: 320.0,
-                                                                                  child: AssignmentDialogWidget(
-                                                                                    task: columnTasksRecord,
-                                                                                  ),
+                                                                                Colors.transparent,
+                                                                            child:
+                                                                                GestureDetector(
+                                                                              onTap: () => _model.unfocusNode.canRequestFocus ? FocusScope.of(context).requestFocus(_model.unfocusNode) : FocusScope.of(context).unfocus(),
+                                                                              child: SizedBox(
+                                                                                height: 320.0,
+                                                                                child: AssignmentDialogWidget(
+                                                                                  task: columnTasksRow,
                                                                                 ),
                                                                               ),
-                                                                            );
-                                                                          },
-                                                                        ).then((value) =>
-                                                                            setState(() {}));
-                                                                      },
-                                                                      text:
-                                                                          'Assign',
-                                                                      options:
-                                                                          FFButtonOptions(
-                                                                        height:
-                                                                            32.0,
-                                                                        padding: const EdgeInsetsDirectional.fromSTEB(
-                                                                            24.0,
-                                                                            0.0,
-                                                                            24.0,
-                                                                            0.0),
-                                                                        iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                                                            0.0,
-                                                                            0.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                        color: FlutterFlowTheme.of(context)
-                                                                            .secondary,
-                                                                        textStyle:
-                                                                            FlutterFlowTheme.of(context).bodyMedium,
-                                                                        elevation:
-                                                                            0.0,
-                                                                        borderSide:
-                                                                            const BorderSide(
-                                                                          color:
-                                                                              Colors.transparent,
-                                                                          width:
-                                                                              1.0,
-                                                                        ),
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(24.0),
+                                                                            ),
+                                                                          );
+                                                                        },
+                                                                      ).then((value) =>
+                                                                          setState(
+                                                                              () {}));
+                                                                    },
+                                                                    text:
+                                                                        'Assign',
+                                                                    options:
+                                                                        FFButtonOptions(
+                                                                      height:
+                                                                          32.0,
+                                                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                                                          24.0,
+                                                                          0.0,
+                                                                          24.0,
+                                                                          0.0),
+                                                                      iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                                      color: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .secondary,
+                                                                      textStyle:
+                                                                          FlutterFlowTheme.of(context)
+                                                                              .bodySmall,
+                                                                      elevation:
+                                                                          0.0,
+                                                                      borderSide:
+                                                                          const BorderSide(
+                                                                        color: Colors
+                                                                            .transparent,
+                                                                        width:
+                                                                            1.0,
                                                                       ),
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              24.0),
                                                                     ),
                                                                   ),
-                                                              ],
-                                                            ),
+                                                                ),
+                                                            ],
                                                           ),
                                                         ),
-                                                      ],
-                                                    ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  Divider(
-                                                    height: 8.0,
-                                                    thickness: 1.0,
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .accent1,
-                                                  ),
-                                                ],
+                                                ),
                                               );
                                             }),
                                           );
@@ -705,7 +659,9 @@ class _TasksWidgetState extends State<TasksWidget> {
                                 ),
                               ),
                             ),
-                          ],
+                          ]
+                              .divide(const SizedBox(height: 20.0))
+                              .around(const SizedBox(height: 20.0)),
                         ),
                       ),
                     ],

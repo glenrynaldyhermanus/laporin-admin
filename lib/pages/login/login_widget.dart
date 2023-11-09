@@ -1,10 +1,12 @@
-import '/auth/firebase_auth/auth_util.dart';
+import '/auth/supabase_auth/auth_util.dart';
+import '/backend/schema/structs/index.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/custom_code/actions/index.dart' as actions;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'login_model.dart';
 export 'login_model.dart';
 
@@ -51,6 +53,8 @@ class _LoginWidgetState extends State<LoginWidget> {
         ),
       );
     }
+
+    context.watch<FFAppState>();
 
     return GestureDetector(
       onTap: () => _model.unfocusNode.canRequestFocus
@@ -275,47 +279,103 @@ class _LoginWidgetState extends State<LoginWidget> {
                                         return;
                                       }
 
-                                      _model.userRole =
-                                          await actions.getRolesByUser(
-                                        currentUserReference!,
+                                      _model.user = await actions.getUserById(
+                                        currentUserUid,
                                       );
                                       shouldSetState = true;
-                                      _model.isAdmin =
-                                          await actions.checkIsAdmin(
-                                        _model.userRole!.roles.toList(),
-                                      );
-                                      shouldSetState = true;
-                                      if (_model.isAdmin == true) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              'Login success!',
-                                              style: TextStyle(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .primaryText,
-                                              ),
-                                            ),
-                                            duration:
-                                                const Duration(milliseconds: 4000),
-                                            backgroundColor:
-                                                FlutterFlowTheme.of(context)
-                                                    .secondary,
-                                          ),
+                                      if (_model.user != null) {
+                                        setState(() {
+                                          FFAppState().authUser = UserStruct(
+                                            userId: _model.user?.id,
+                                            name: _model.user?.name,
+                                            email: _model.user?.email,
+                                          );
+                                        });
+                                        _model.activeBusiness =
+                                            await actions.getActiveBusiness(
+                                          _model.user!.id,
                                         );
+                                        shouldSetState = true;
+                                        if (_model.activeBusiness?.roleId ==
+                                            0) {
+                                          _model.business =
+                                              await actions.getBusinessById(
+                                            _model.activeBusiness!.id,
+                                          );
+                                          shouldSetState = true;
+                                          _model.role =
+                                              await actions.getRoleById(
+                                            _model.activeBusiness!.roleId!,
+                                          );
+                                          shouldSetState = true;
+                                          setState(() {
+                                            FFAppState().updateAuthUserStruct(
+                                              (e) => e
+                                                ..business =
+                                                    _model.business?.name
+                                                ..role = _model.role?.name
+                                                ..businessId =
+                                                    _model.business?.id,
+                                            );
+                                          });
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Login success!',
+                                                style: TextStyle(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .primaryText,
+                                                ),
+                                              ),
+                                              duration:
+                                                  const Duration(milliseconds: 4000),
+                                              backgroundColor:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondary,
+                                            ),
+                                          );
 
-                                        context.pushNamedAuth(
-                                            'Home', context.mounted);
+                                          context.pushNamedAuth(
+                                              'Home', context.mounted);
 
-                                        if (shouldSetState) setState(() {});
-                                        return;
+                                          if (shouldSetState) setState(() {});
+                                          return;
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'You\'re unauthorized, please chat our customer service',
+                                                style: TextStyle(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .primaryText,
+                                                ),
+                                              ),
+                                              duration:
+                                                  const Duration(milliseconds: 4000),
+                                              backgroundColor:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondary,
+                                            ),
+                                          );
+                                          GoRouter.of(context)
+                                              .prepareAuthEvent();
+                                          await authManager.signOut();
+                                          GoRouter.of(context)
+                                              .clearRedirectLocation();
+
+                                          if (shouldSetState) setState(() {});
+                                          return;
+                                        }
                                       } else {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           SnackBar(
                                             content: Text(
-                                              'You\'re unauthorized, please chat our customer service',
+                                              'Sorry! You have no access',
                                               style: TextStyle(
                                                 color:
                                                     FlutterFlowTheme.of(context)
@@ -329,6 +389,9 @@ class _LoginWidgetState extends State<LoginWidget> {
                                                     .secondary,
                                           ),
                                         );
+                                        setState(() {
+                                          FFAppState().authUser = UserStruct();
+                                        });
                                         GoRouter.of(context).prepareAuthEvent();
                                         await authManager.signOut();
                                         GoRouter.of(context)

@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 
+import '/backend/supabase/supabase.dart';
 import '/auth/base_auth_user_provider.dart';
 
-import '/backend/push_notifications/push_notifications_handler.dart'
-    show PushNotificationsHandler;
 import '/index.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -117,8 +116,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           path: '/forms/builder',
           requireAuth: true,
           builder: (context, params) => FormBuilderWidget(
-            form: params.getParam(
-                'form', ParamType.DocumentReference, false, ['forms']),
+            form: params.getParam<FormsRow>('form', ParamType.SupabaseRow),
           ),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
@@ -238,7 +236,6 @@ class FFParameters {
     String paramName,
     ParamType type, [
     bool isList = false,
-    List<String>? collectionNamePath,
   ]) {
     if (futureParamValues.containsKey(paramName)) {
       return futureParamValues[paramName];
@@ -252,8 +249,11 @@ class FFParameters {
       return param;
     }
     // Return serialized value.
-    return deserializeParam<T>(param, type, isList,
-        collectionNamePath: collectionNamePath);
+    return deserializeParam<T>(
+      param,
+      type,
+      isList,
+    );
   }
 }
 
@@ -309,7 +309,7 @@ class FFRoute {
                     ),
                   ),
                 )
-              : PushNotificationsHandler(child: page);
+              : page;
 
           final transitionInfo = state.transitionInfo;
           return transitionInfo.hasTransition

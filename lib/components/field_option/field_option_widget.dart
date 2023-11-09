@@ -1,16 +1,12 @@
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'field_option_model.dart';
 export 'field_option_model.dart';
 
 class FieldOptionWidget extends StatefulWidget {
-  const FieldOptionWidget({
-    super.key,
-    required this.option,
-  });
-
-  final String? option;
+  const FieldOptionWidget({super.key});
 
   @override
   _FieldOptionWidgetState createState() => _FieldOptionWidgetState();
@@ -30,7 +26,7 @@ class _FieldOptionWidgetState extends State<FieldOptionWidget> {
     super.initState();
     _model = createModel(context, () => FieldOptionModel());
 
-    _model.optionsController ??= TextEditingController(text: widget.option);
+    _model.optionsController ??= TextEditingController();
     _model.optionsFocusNode ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
@@ -45,6 +41,8 @@ class _FieldOptionWidgetState extends State<FieldOptionWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return Container(
       width: 160.0,
       decoration: const BoxDecoration(),
