@@ -1,4 +1,3 @@
-import '/backend/backend.dart';
 import '/components/header/header_widget.dart';
 import '/components/side_bar/side_bar_widget.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -13,8 +12,6 @@ class FormsModel extends FlutterFlowModel<FormsWidget> {
   late SideBarModel sideBarModel;
   // Model for Header component.
   late HeaderModel headerModel;
-  // Stores action output result for [Backend Call - Create Document] action in Button widget.
-  FormsRecord? form;
 
   /// Initialization and disposal methods.
 

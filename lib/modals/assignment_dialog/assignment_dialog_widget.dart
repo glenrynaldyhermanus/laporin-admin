@@ -1,14 +1,13 @@
-import '/backend/backend.dart';
-import '/backend/push_notifications/push_notifications_util.dart';
+import '/backend/supabase/supabase.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/form_field_controller.dart';
-import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 import 'assignment_dialog_model.dart';
 export 'assignment_dialog_model.dart';
 
@@ -18,7 +17,7 @@ class AssignmentDialogWidget extends StatefulWidget {
     required this.task,
   });
 
-  final TasksRecord? task;
+  final TasksRow? task;
 
   @override
   _AssignmentDialogWidgetState createState() => _AssignmentDialogWidgetState();
@@ -50,12 +49,24 @@ class _AssignmentDialogWidgetState extends State<AssignmentDialogWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return Align(
       alignment: const AlignmentDirectional(0.00, 0.00),
       child: Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-        child: StreamBuilder<List<UsersRecord>>(
-          stream: queryUsersRecord(),
+        child: FutureBuilder<List<BusinessUsersRow>>(
+          future: BusinessUsersTable().queryRows(
+            queryFn: (q) => q
+                .eq(
+                  'business_id',
+                  FFAppState().authUser.businessId,
+                )
+                .eq(
+                  'role_id',
+                  1,
+                ),
+          ),
           builder: (context, snapshot) {
             // Customize what your widget looks like when it's loading.
             if (!snapshot.hasData) {
@@ -70,7 +81,8 @@ class _AssignmentDialogWidgetState extends State<AssignmentDialogWidget> {
                 ),
               );
             }
-            List<UsersRecord> materialDialog4UsersRecordList = snapshot.data!;
+            List<BusinessUsersRow> materialDialog4BusinessUsersRowList =
+                snapshot.data!;
             return Container(
               width: double.infinity,
               constraints: const BoxConstraints(
@@ -147,9 +159,7 @@ class _AssignmentDialogWidgetState extends State<AssignmentDialogWidget> {
                                     controller:
                                         _model.dropDownValueController ??=
                                             FormFieldController<String>(null),
-                                    options: materialDialog4UsersRecordList
-                                        .map((e) => e.displayName)
-                                        .toList(),
+                                    options: const [''],
                                     onChanged: (val) => setState(
                                         () => _model.dropDownValue = val),
                                     width: double.infinity,
@@ -193,34 +203,9 @@ class _AssignmentDialogWidgetState extends State<AssignmentDialogWidget> {
                               0.0, 16.0, 0.0, 16.0),
                           child: FFButtonWidget(
                             onPressed: () async {
-                              await widget.task!.reference.update({
-                                ...createTasksRecordData(
-                                  status: 'Assigned',
-                                ),
-                                ...mapToFirestore(
-                                  {
-                                    'assignees': FieldValue.arrayUnion([
-                                      functions.getReferenceFromUserName(
-                                          _model.dropDownValue!,
-                                          materialDialog4UsersRecordList
-                                              .toList())
-                                    ]),
-                                  },
-                                ),
+                              await TaskAssigneesTable().insert({
+                                'task_id': widget.task?.id,
                               });
-                              triggerPushNotification(
-                                notificationTitle: 'New Task',
-                                notificationText:
-                                    'You got new task assigned for you',
-                                notificationSound: 'default',
-                                userRefs: [
-                                  functions.getReferenceFromUserName(
-                                      _model.dropDownValue!,
-                                      materialDialog4UsersRecordList.toList())
-                                ],
-                                initialPageName: 'Home',
-                                parameterData: {},
-                              );
                               Navigator.pop(context);
                             },
                             text: 'Assign',

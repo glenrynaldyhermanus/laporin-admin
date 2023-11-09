@@ -1,4 +1,4 @@
-import '/backend/backend.dart';
+import '/backend/supabase/supabase.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'login_widget.dart' show LoginWidget;
 import 'package:flutter/material.dart';
@@ -16,10 +16,14 @@ class LoginModel extends FlutterFlowModel<LoginWidget> {
   TextEditingController? passwordController;
   late bool passwordVisibility;
   String? Function(BuildContext, String?)? passwordControllerValidator;
-  // Stores action output result for [Custom Action - getRolesByUser] action in Button widget.
-  UserRolesRecord? userRole;
-  // Stores action output result for [Custom Action - checkIsAdmin] action in Button widget.
-  bool? isAdmin;
+  // Stores action output result for [Custom Action - getUserById] action in Button widget.
+  UsersRow? user;
+  // Stores action output result for [Custom Action - getActiveBusiness] action in Button widget.
+  BusinessUsersRow? activeBusiness;
+  // Stores action output result for [Custom Action - getBusinessById] action in Button widget.
+  BusinessesRow? business;
+  // Stores action output result for [Custom Action - getRoleById] action in Button widget.
+  RolesRow? role;
 
   /// Initialization and disposal methods.
 

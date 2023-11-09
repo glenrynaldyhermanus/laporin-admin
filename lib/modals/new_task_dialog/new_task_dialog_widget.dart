@@ -1,14 +1,13 @@
-import '/auth/firebase_auth/auth_util.dart';
-import '/backend/backend.dart';
+import '/backend/supabase/supabase.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/form_field_controller.dart';
-import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 import 'new_task_dialog_model.dart';
 export 'new_task_dialog_model.dart';
 
@@ -54,12 +53,19 @@ class _NewTaskDialogWidgetState extends State<NewTaskDialogWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return Align(
       alignment: const AlignmentDirectional(0.00, 0.00),
       child: Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-        child: StreamBuilder<List<FormsRecord>>(
-          stream: queryFormsRecord(),
+        child: FutureBuilder<List<FormsRow>>(
+          future: FormsTable().queryRows(
+            queryFn: (q) => q.eq(
+              'business_id',
+              FFAppState().authUser.businessId,
+            ),
+          ),
           builder: (context, snapshot) {
             // Customize what your widget looks like when it's loading.
             if (!snapshot.hasData) {
@@ -74,7 +80,7 @@ class _NewTaskDialogWidgetState extends State<NewTaskDialogWidget> {
                 ),
               );
             }
-            List<FormsRecord> materialDialog4FormsRecordList = snapshot.data!;
+            List<FormsRow> materialDialog4FormsRowList = snapshot.data!;
             return Container(
               width: double.infinity,
               constraints: const BoxConstraints(
@@ -377,7 +383,7 @@ class _NewTaskDialogWidgetState extends State<NewTaskDialogWidget> {
                                     controller:
                                         _model.dropDownValueController ??=
                                             FormFieldController<String>(null),
-                                    options: materialDialog4FormsRecordList
+                                    options: materialDialog4FormsRowList
                                         .map((e) => e.name)
                                         .toList(),
                                     onChanged: (val) => setState(
@@ -529,20 +535,16 @@ class _NewTaskDialogWidgetState extends State<NewTaskDialogWidget> {
                               0.0, 16.0, 0.0, 16.0),
                           child: FFButtonWidget(
                             onPressed: () async {
-                              await TasksRecord.collection
-                                  .doc()
-                                  .set(createTasksRecordData(
-                                    owner: currentUserReference,
-                                    name: _model.nameController.text,
-                                    description: _model.descController.text,
-                                    due: _model.datePicked,
-                                    location: _model.locationController.text,
-                                    status: 'New',
-                                    form: functions.getReferenceFromFormName(
-                                        _model.dropDownValue!,
-                                        materialDialog4FormsRecordList
-                                            .toList()),
-                                  ));
+                              await TasksTable().insert({
+                                'name': _model.nameController.text,
+                                'description': _model.descController.text,
+                                'business_id': FFAppState().authUser.businessId,
+                                'owner_id': FFAppState().authUser.userId,
+                                'location': _model.locationController.text,
+                                'due_at':
+                                    supaSerialize<DateTime>(_model.datePicked),
+                                'status': 0,
+                              });
                               Navigator.pop(context);
                             },
                             text: 'Save Task',

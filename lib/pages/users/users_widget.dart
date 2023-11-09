@@ -1,14 +1,13 @@
-import '/backend/backend.dart';
+import '/backend/supabase/supabase.dart';
 import '/components/header/header_widget.dart';
 import '/components/side_bar/side_bar_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import '/modals/invitation_dialog/invitation_dialog_widget.dart';
-import 'package:aligned_dialog/aligned_dialog.dart';
+import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 import 'users_model.dart';
 export 'users_model.dart';
 
@@ -50,6 +49,8 @@ class _UsersWidgetState extends State<UsersWidget> {
       );
     }
 
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () => _model.unfocusNode.canRequestFocus
           ? FocusScope.of(context).requestFocus(_model.unfocusNode)
@@ -66,9 +67,7 @@ class _UsersWidgetState extends State<UsersWidget> {
               wrapWithModel(
                 model: _model.sideBarModel,
                 updateCallback: () => setState(() {}),
-                child: const SideBarWidget(
-                  pagTitle: 'User Management',
-                ),
+                child: const SideBarWidget(),
               ),
               Expanded(
                 child: Container(
@@ -83,96 +82,25 @@ class _UsersWidgetState extends State<UsersWidget> {
                       wrapWithModel(
                         model: _model.headerModel,
                         updateCallback: () => setState(() {}),
-                        child: const HeaderWidget(
-                          pageTitle: 'User Management',
-                        ),
+                        child: const HeaderWidget(),
                       ),
                       Expanded(
                         child: Column(
                           mainAxisSize: MainAxisSize.max,
                           children: [
-                            Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  32.0, 24.0, 32.0, 16.0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Builder(
-                                    builder: (context) => FFButtonWidget(
-                                      onPressed: () async {
-                                        await showAlignedDialog(
-                                          context: context,
-                                          isGlobal: true,
-                                          avoidOverflow: false,
-                                          targetAnchor: const AlignmentDirectional(
-                                                  0.0, 0.0)
-                                              .resolve(
-                                                  Directionality.of(context)),
-                                          followerAnchor: const AlignmentDirectional(
-                                                  0.0, 0.0)
-                                              .resolve(
-                                                  Directionality.of(context)),
-                                          builder: (dialogContext) {
-                                            return Material(
-                                              color: Colors.transparent,
-                                              child: GestureDetector(
-                                                onTap: () => _model.unfocusNode
-                                                        .canRequestFocus
-                                                    ? FocusScope.of(context)
-                                                        .requestFocus(
-                                                            _model.unfocusNode)
-                                                    : FocusScope.of(context)
-                                                        .unfocus(),
-                                                child: const InvitationDialogWidget(),
-                                              ),
-                                            );
-                                          },
-                                        ).then((value) => setState(() {}));
-                                      },
-                                      text: 'Invite People',
-                                      icon: const Icon(
-                                        Icons.add_circle,
-                                        size: 15.0,
-                                      ),
-                                      options: FFButtonOptions(
-                                        height: 40.0,
-                                        padding: const EdgeInsetsDirectional.fromSTEB(
-                                            24.0, 0.0, 24.0, 0.0),
-                                        iconPadding:
-                                            const EdgeInsetsDirectional.fromSTEB(
-                                                0.0, 0.0, 0.0, 0.0),
-                                        color: FlutterFlowTheme.of(context)
-                                            .primary,
-                                        textStyle: FlutterFlowTheme.of(context)
-                                            .titleSmall
-                                            .override(
-                                              fontFamily: 'Montserrat',
-                                              color: Colors.white,
-                                            ),
-                                        elevation: 0.0,
-                                        borderSide: const BorderSide(
-                                          color: Colors.transparent,
-                                          width: 1.0,
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(24.0),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsetsDirectional.fromSTEB(
-                                    32.0, 0.0, 32.0, 32.0),
+                                    20.0, 0.0, 20.0, 0.0),
                                 child: Container(
                                   width: double.infinity,
                                   height: 100.0,
                                   decoration: BoxDecoration(
                                     color: FlutterFlowTheme.of(context)
                                         .primaryBackground,
-                                    borderRadius: BorderRadius.circular(16.0),
+                                    border: Border.all(
+                                      color: const Color(0x1A636F81),
+                                    ),
                                   ),
                                   child: Column(
                                     mainAxisSize: MainAxisSize.max,
@@ -182,64 +110,82 @@ class _UsersWidgetState extends State<UsersWidget> {
                                         height: 44.0,
                                         decoration: BoxDecoration(
                                           color: FlutterFlowTheme.of(context)
-                                              .accent1,
-                                          borderRadius: const BorderRadius.only(
-                                            bottomLeft: Radius.circular(0.0),
-                                            bottomRight: Radius.circular(0.0),
-                                            topLeft: Radius.circular(16.0),
-                                            topRight: Radius.circular(16.0),
+                                              .primaryBackground,
+                                          border: Border.all(
+                                            color: const Color(0x1A636F81),
                                           ),
                                         ),
-                                        child: Row(
+                                        child: Column(
                                           mainAxisSize: MainAxisSize.max,
                                           children: [
                                             Expanded(
-                                              child: Text(
-                                                'UUID',
-                                                style:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium,
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      'UUID',
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodySmall,
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      'Email',
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodySmall,
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      'Name',
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodySmall,
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      'Gender',
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodySmall,
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      'Birthdate',
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodySmall,
+                                                    ),
+                                                  ),
+                                                ]
+                                                    .divide(
+                                                        const SizedBox(width: 16.0))
+                                                    .around(
+                                                        const SizedBox(width: 16.0)),
                                               ),
                                             ),
-                                            Expanded(
-                                              child: Text(
-                                                'Email',
-                                                style:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium,
-                                              ),
+                                            const Divider(
+                                              height: 1.0,
+                                              thickness: 1.0,
+                                              color: Color(0x32636F81),
                                             ),
-                                            Expanded(
-                                              child: Text(
-                                                'Name',
-                                                style:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium,
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Text(
-                                                'Gender',
-                                                style:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium,
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Text(
-                                                'Birthdate',
-                                                style:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium,
-                                              ),
-                                            ),
-                                          ]
-                                              .divide(const SizedBox(width: 16.0))
-                                              .around(const SizedBox(width: 16.0)),
+                                          ],
                                         ),
                                       ),
-                                      StreamBuilder<List<UsersRecord>>(
-                                        stream: queryUsersRecord(),
+                                      FutureBuilder<List<UsersRow>>(
+                                        future: UsersTable().queryRows(
+                                          queryFn: (q) => q,
+                                        ),
                                         builder: (context, snapshot) {
                                           // Customize what your widget looks like when it's loading.
                                           if (!snapshot.hasData) {
@@ -256,91 +202,90 @@ class _UsersWidgetState extends State<UsersWidget> {
                                               ),
                                             );
                                           }
-                                          List<UsersRecord>
-                                              columnUsersRecordList =
+                                          List<UsersRow> columnUsersRowList =
                                               snapshot.data!;
                                           return Column(
                                             mainAxisSize: MainAxisSize.max,
                                             children: List.generate(
-                                                columnUsersRecordList.length,
+                                                columnUsersRowList.length,
                                                 (columnIndex) {
-                                              final columnUsersRecord =
-                                                  columnUsersRecordList[
+                                              final columnUsersRow =
+                                                  columnUsersRowList[
                                                       columnIndex];
-                                              return Column(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsetsDirectional
-                                                            .fromSTEB(0.0, 8.0,
-                                                                0.0, 8.0),
-                                                    child: Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.max,
-                                                      children: [
-                                                        Expanded(
-                                                          child: Text(
-                                                            columnUsersRecord
-                                                                .reference.id,
-                                                            style: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .bodyMedium,
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          child: Text(
-                                                            columnUsersRecord
-                                                                .email,
-                                                            style: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .bodyMedium,
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          child: Text(
-                                                            columnUsersRecord
-                                                                .displayName,
-                                                            style: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .bodyMedium,
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          child: Text(
-                                                            columnUsersRecord
-                                                                .gender,
-                                                            style: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .bodyMedium,
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          child: Text(
-                                                            dateTimeFormat(
-                                                                'd/M/y',
-                                                                columnUsersRecord
-                                                                    .birthdate!),
-                                                            style: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .bodyMedium,
-                                                          ),
-                                                        ),
-                                                      ]
-                                                          .divide(const SizedBox(
-                                                              width: 16.0))
-                                                          .around(const SizedBox(
-                                                              width: 16.0)),
-                                                    ),
+                                              return Container(
+                                                width: double.infinity,
+                                                decoration: BoxDecoration(
+                                                  color: functions
+                                                          .isEven(columnIndex)
+                                                      ? FlutterFlowTheme.of(
+                                                              context)
+                                                          .primaryBackground
+                                                      : FlutterFlowTheme.of(
+                                                              context)
+                                                          .secondaryBackground,
+                                                  border: Border.all(
+                                                    color: const Color(0x0E636F81),
                                                   ),
-                                                  Divider(
-                                                    height: 8.0,
-                                                    thickness: 1.0,
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .accent1,
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsetsDirectional
+                                                      .fromSTEB(
+                                                          0.0, 16.0, 0.0, 16.0),
+                                                  child: Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.max,
+                                                    children: [
+                                                      Expanded(
+                                                        child: Text(
+                                                          columnUsersRow.uuid,
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .bodySmall,
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          columnUsersRow.email,
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .bodySmall,
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          columnUsersRow.name,
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .bodySmall,
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          columnUsersRow
+                                                              .gender!,
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .bodySmall,
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          dateTimeFormat(
+                                                              'd/M/y',
+                                                              columnUsersRow
+                                                                  .birthdate!),
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .bodySmall,
+                                                        ),
+                                                      ),
+                                                    ]
+                                                        .divide(const SizedBox(
+                                                            width: 16.0))
+                                                        .around(const SizedBox(
+                                                            width: 16.0)),
                                                   ),
-                                                ],
+                                                ),
                                               );
                                             }),
                                           );
@@ -351,7 +296,9 @@ class _UsersWidgetState extends State<UsersWidget> {
                                 ),
                               ),
                             ),
-                          ],
+                          ]
+                              .divide(const SizedBox(height: 20.0))
+                              .around(const SizedBox(height: 20.0)),
                         ),
                       ),
                     ],

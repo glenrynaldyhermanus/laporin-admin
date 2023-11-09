@@ -1,4 +1,4 @@
-import '/backend/backend.dart';
+import '/backend/supabase/supabase.dart';
 import '/components/field_option/field_option_widget.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -6,21 +6,21 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/form_field_controller.dart';
-import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'field_item_model.dart';
 export 'field_item_model.dart';
 
 class FieldItemWidget extends StatefulWidget {
   const FieldItemWidget({
     super.key,
-    required this.formField,
-    required this.fields,
+    required this.field,
+    required this.fieldTypes,
   });
 
-  final FormFieldsRecord? formField;
-  final List<FieldsRecord>? fields;
+  final FieldsRow? field;
+  final List<FieldTypesRow>? fieldTypes;
 
   @override
   _FieldItemWidgetState createState() => _FieldItemWidgetState();
@@ -41,7 +41,7 @@ class _FieldItemWidgetState extends State<FieldItemWidget> {
     _model = createModel(context, () => FieldItemModel());
 
     _model.nameController ??=
-        TextEditingController(text: widget.formField?.question);
+        TextEditingController(text: widget.field?.question);
     _model.nameFocusNode ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
@@ -56,6 +56,8 @@ class _FieldItemWidgetState extends State<FieldItemWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -77,7 +79,7 @@ class _FieldItemWidgetState extends State<FieldItemWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.formField!.reference.id,
+                    widget.field!.id.toString(),
                     style: FlutterFlowTheme.of(context).bodySmall.override(
                           fontFamily: 'Montserrat',
                           fontStyle: FontStyle.italic,
@@ -89,25 +91,10 @@ class _FieldItemWidgetState extends State<FieldItemWidget> {
                     children: [
                       FlutterFlowDropDown<String>(
                         controller: _model.dropDownValueController ??=
-                            FormFieldController<String>(
-                          _model.dropDownValue ??=
-                              functions.getFieldFromReference(
-                                  widget.formField!.field!,
-                                  widget.fields!.toList()),
-                        ),
-                        options: widget.fields!.map((e) => e.name).toList(),
-                        onChanged: (val) async {
-                          setState(() => _model.dropDownValue = val);
-                          setState(() {
-                            _model.active = true;
-                          });
-
-                          await widget.formField!.reference
-                              .update(createFormFieldsRecordData(
-                            field: functions.getReferenceFromFieldName(
-                                _model.dropDownValue!, widget.fields!.toList()),
-                          ));
-                        },
+                            FormFieldController<String>(null),
+                        options: widget.fieldTypes!.map((e) => e.name).toList(),
+                        onChanged: (val) =>
+                            setState(() => _model.dropDownValue = val),
                         width: 300.0,
                         height: 50.0,
                         textStyle: FlutterFlowTheme.of(context).bodyMedium,
@@ -184,71 +171,51 @@ class _FieldItemWidgetState extends State<FieldItemWidget> {
                               .asValidator(context),
                         ),
                       ),
-                      if (widget.formField?.field?.id == 'K3D6DJyZbrWki3C7IoZE')
-                        Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(
-                              0.0, 16.0, 0.0, 0.0),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Builder(
-                                builder: (context) {
-                                  final options =
-                                      widget.formField?.options.toList() ?? [];
-                                  return Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: List.generate(options.length,
-                                        (optionsIndex) {
-                                      final optionsItem = options[optionsIndex];
-                                      return FieldOptionWidget(
-                                        key: Key(
-                                            'Keygni_${optionsIndex}_of_${options.length}'),
-                                        option: optionsItem,
-                                      );
-                                    }).divide(const SizedBox(width: 16.0)),
-                                  );
-                                },
-                              ),
-                              FFButtonWidget(
-                                onPressed: () async {
-                                  await widget.formField!.reference.update({
-                                    ...mapToFirestore(
-                                      {
-                                        'options': FieldValue.arrayUnion([
-                                          'Option ${widget.formField?.options.length.toString()}'
-                                        ]),
-                                      },
-                                    ),
-                                  });
-                                },
-                                text: 'Add Option',
-                                options: FFButtonOptions(
-                                  height: 40.0,
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
-                                      24.0, 0.0, 24.0, 0.0),
-                                  iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                      0.0, 0.0, 0.0, 0.0),
-                                  color: FlutterFlowTheme.of(context)
-                                      .primaryBackground,
-                                  textStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .override(
-                                        fontFamily: 'Montserrat',
-                                        color: FlutterFlowTheme.of(context)
-                                            .tertiary,
-                                      ),
-                                  elevation: 0.0,
-                                  borderSide: BorderSide(
-                                    color:
-                                        FlutterFlowTheme.of(context).tertiary,
-                                    width: 1.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(24.0),
+                      Padding(
+                        padding:
+                            const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                wrapWithModel(
+                                  model: _model.fieldOptionModel,
+                                  updateCallback: () => setState(() {}),
+                                  child: const FieldOptionWidget(),
                                 ),
+                              ].divide(const SizedBox(width: 16.0)),
+                            ),
+                            FFButtonWidget(
+                              onPressed: () async {},
+                              text: 'Add Option',
+                              options: FFButtonOptions(
+                                height: 40.0,
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    24.0, 0.0, 24.0, 0.0),
+                                iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 0.0, 0.0, 0.0),
+                                color: FlutterFlowTheme.of(context)
+                                    .primaryBackground,
+                                textStyle: FlutterFlowTheme.of(context)
+                                    .titleSmall
+                                    .override(
+                                      fontFamily: 'Montserrat',
+                                      color:
+                                          FlutterFlowTheme.of(context).tertiary,
+                                    ),
+                                elevation: 0.0,
+                                borderSide: BorderSide(
+                                  color: FlutterFlowTheme.of(context).tertiary,
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(24.0),
                               ),
-                            ].divide(const SizedBox(width: 8.0)),
-                          ),
+                            ),
+                          ].divide(const SizedBox(width: 8.0)),
                         ),
+                      ),
                     ].divide(const SizedBox(height: 8.0)),
                   ),
                   Row(
@@ -256,17 +223,7 @@ class _FieldItemWidgetState extends State<FieldItemWidget> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       FFButtonWidget(
-                        onPressed: () async {
-                          await widget.formField!.reference
-                              .update(createFormFieldsRecordData(
-                            question: _model.nameController.text,
-                            field: functions.getReferenceFromFieldName(
-                                _model.dropDownValue!, widget.fields!.toList()),
-                          ));
-                          setState(() {
-                            _model.active = false;
-                          });
-                        },
+                        onPressed: () async {},
                         text: 'Save Field',
                         options: FFButtonOptions(
                           height: 40.0,
@@ -304,9 +261,7 @@ class _FieldItemWidgetState extends State<FieldItemWidget> {
             color: FlutterFlowTheme.of(context).error,
             size: 32.0,
           ),
-          onPressed: () async {
-            await widget.formField!.reference.delete();
-          },
+          onPressed: () async {},
         ),
       ].divide(const SizedBox(width: 24.0)).around(const SizedBox(width: 24.0)),
     );

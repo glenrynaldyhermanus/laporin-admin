@@ -1,12 +1,13 @@
-import '/backend/backend.dart';
+import '/backend/supabase/supabase.dart';
 import '/components/header/header_widget.dart';
 import '/components/side_bar/side_bar_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
+import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 import 'forms_model.dart';
 export 'forms_model.dart';
 
@@ -48,6 +49,8 @@ class _FormsWidgetState extends State<FormsWidget> {
       );
     }
 
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () => _model.unfocusNode.canRequestFocus
           ? FocusScope.of(context).requestFocus(_model.unfocusNode)
@@ -64,9 +67,7 @@ class _FormsWidgetState extends State<FormsWidget> {
               wrapWithModel(
                 model: _model.sideBarModel,
                 updateCallback: () => setState(() {}),
-                child: const SideBarWidget(
-                  pagTitle: 'Form Management',
-                ),
+                child: const SideBarWidget(),
               ),
               Expanded(
                 child: Container(
@@ -81,82 +82,21 @@ class _FormsWidgetState extends State<FormsWidget> {
                       wrapWithModel(
                         model: _model.headerModel,
                         updateCallback: () => setState(() {}),
-                        child: const HeaderWidget(
-                          pageTitle: 'Form Management',
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(
-                            32.0, 24.0, 32.0, 16.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            FFButtonWidget(
-                              onPressed: () async {
-                                var formsRecordReference =
-                                    FormsRecord.collection.doc();
-                                await formsRecordReference
-                                    .set(createFormsRecordData(
-                                  name: 'New Form',
-                                ));
-                                _model.form = FormsRecord.getDocumentFromData(
-                                    createFormsRecordData(
-                                      name: 'New Form',
-                                    ),
-                                    formsRecordReference);
-
-                                context.pushNamed(
-                                  'FormBuilder',
-                                  queryParameters: {
-                                    'form': serializeParam(
-                                      _model.form?.reference,
-                                      ParamType.DocumentReference,
-                                    ),
-                                  }.withoutNulls,
-                                );
-
-                                setState(() {});
-                              },
-                              text: 'Create',
-                              icon: const Icon(
-                                Icons.add_circle,
-                                size: 15.0,
-                              ),
-                              options: FFButtonOptions(
-                                height: 40.0,
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    24.0, 0.0, 24.0, 0.0),
-                                iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                    0.0, 0.0, 0.0, 0.0),
-                                color: FlutterFlowTheme.of(context).primary,
-                                textStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .override(
-                                      fontFamily: 'Montserrat',
-                                      color: Colors.white,
-                                    ),
-                                elevation: 0.0,
-                                borderSide: const BorderSide(
-                                  color: Colors.transparent,
-                                  width: 1.0,
-                                ),
-                                borderRadius: BorderRadius.circular(24.0),
-                              ),
-                            ),
-                          ],
-                        ),
+                        child: const HeaderWidget(),
                       ),
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(
-                              32.0, 0.0, 32.0, 32.0),
+                              20.0, 20.0, 20.0, 20.0),
                           child: Container(
                             width: double.infinity,
                             height: 100.0,
                             decoration: BoxDecoration(
                               color: FlutterFlowTheme.of(context)
                                   .primaryBackground,
-                              borderRadius: BorderRadius.circular(16.0),
+                              border: Border.all(
+                                color: const Color(0x1A636F81),
+                              ),
                             ),
                             child: Column(
                               mainAxisSize: MainAxisSize.max,
@@ -165,12 +105,10 @@ class _FormsWidgetState extends State<FormsWidget> {
                                   width: double.infinity,
                                   height: 44.0,
                                   decoration: BoxDecoration(
-                                    color: FlutterFlowTheme.of(context).accent1,
-                                    borderRadius: const BorderRadius.only(
-                                      bottomLeft: Radius.circular(0.0),
-                                      bottomRight: Radius.circular(0.0),
-                                      topLeft: Radius.circular(16.0),
-                                      topRight: Radius.circular(16.0),
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryBackground,
+                                    border: Border.all(
+                                      color: const Color(0x1A636F81),
                                     ),
                                   ),
                                   child: Row(
@@ -180,7 +118,7 @@ class _FormsWidgetState extends State<FormsWidget> {
                                         child: Text(
                                           'UUID',
                                           style: FlutterFlowTheme.of(context)
-                                              .bodyMedium,
+                                              .bodySmall,
                                         ),
                                       ),
                                       Expanded(
@@ -188,7 +126,7 @@ class _FormsWidgetState extends State<FormsWidget> {
                                         child: Text(
                                           'Name',
                                           style: FlutterFlowTheme.of(context)
-                                              .bodyMedium,
+                                              .bodySmall,
                                         ),
                                       ),
                                       Expanded(
@@ -196,7 +134,7 @@ class _FormsWidgetState extends State<FormsWidget> {
                                         child: Text(
                                           'No Of Questions',
                                           style: FlutterFlowTheme.of(context)
-                                              .bodyMedium,
+                                              .bodySmall,
                                         ),
                                       ),
                                     ]
@@ -204,8 +142,13 @@ class _FormsWidgetState extends State<FormsWidget> {
                                         .around(const SizedBox(width: 16.0)),
                                   ),
                                 ),
-                                StreamBuilder<List<FormsRecord>>(
-                                  stream: queryFormsRecord(),
+                                FutureBuilder<List<FormsRow>>(
+                                  future: FormsTable().queryRows(
+                                    queryFn: (q) => q.eq(
+                                      'business_id',
+                                      FFAppState().authUser.businessId,
+                                    ),
+                                  ),
                                   builder: (context, snapshot) {
                                     // Customize what your widget looks like when it's loading.
                                     if (!snapshot.hasData) {
@@ -221,115 +164,126 @@ class _FormsWidgetState extends State<FormsWidget> {
                                         ),
                                       );
                                     }
-                                    List<FormsRecord> columnFormsRecordList =
+                                    List<FormsRow> columnFormsRowList =
                                         snapshot.data!;
                                     return Column(
                                       mainAxisSize: MainAxisSize.max,
                                       children: List.generate(
-                                          columnFormsRecordList.length,
+                                          columnFormsRowList.length,
                                           (columnIndex) {
-                                        final columnFormsRecord =
-                                            columnFormsRecordList[columnIndex];
-                                        return InkWell(
-                                          splashColor: Colors.transparent,
-                                          focusColor: Colors.transparent,
-                                          hoverColor: Colors.transparent,
-                                          highlightColor: Colors.transparent,
-                                          onTap: () async {
-                                            context.pushNamed(
-                                              'FormBuilder',
-                                              queryParameters: {
-                                                'form': serializeParam(
-                                                  columnFormsRecord.reference,
-                                                  ParamType.DocumentReference,
-                                                ),
-                                              }.withoutNulls,
-                                            );
-                                          },
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsetsDirectional
-                                                    .fromSTEB(
-                                                        0.0, 8.0, 0.0, 8.0),
-                                                child: Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.max,
-                                                  children: [
-                                                    Expanded(
-                                                      child: Text(
-                                                        columnFormsRecord
-                                                            .reference.id,
-                                                        style:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium,
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      flex: 2,
-                                                      child: Text(
-                                                        columnFormsRecord.name,
-                                                        style:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium,
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      flex: 3,
-                                                      child: FutureBuilder<int>(
-                                                        future:
-                                                            queryFormFieldsRecordCount(
-                                                          parent:
-                                                              columnFormsRecord
-                                                                  .reference,
-                                                        ),
-                                                        builder: (context,
-                                                            snapshot) {
-                                                          // Customize what your widget looks like when it's loading.
-                                                          if (!snapshot
-                                                              .hasData) {
-                                                            return Center(
-                                                              child:
-                                                                  LinearProgressIndicator(
-                                                                color: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .primary,
+                                        final columnFormsRow =
+                                            columnFormsRowList[columnIndex];
+                                        return Container(
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            color: functions.isEven(columnIndex)
+                                                ? FlutterFlowTheme.of(context)
+                                                    .primaryBackground
+                                                : FlutterFlowTheme.of(context)
+                                                    .secondaryBackground,
+                                            border: Border.all(
+                                              color: const Color(0x0E636F81),
+                                            ),
+                                          ),
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsetsDirectional.fromSTEB(
+                                                    0.0, 16.0, 0.0, 16.0),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: [
+                                                Expanded(
+                                                  child: InkWell(
+                                                    splashColor:
+                                                        Colors.transparent,
+                                                    focusColor:
+                                                        Colors.transparent,
+                                                    hoverColor:
+                                                        Colors.transparent,
+                                                    highlightColor:
+                                                        Colors.transparent,
+                                                    onTap: () async {
+                                                      context.pushNamed(
+                                                        'FormBuilder',
+                                                        queryParameters: {
+                                                          'form':
+                                                              serializeParam(
+                                                            columnFormsRow,
+                                                            ParamType
+                                                                .SupabaseRow,
+                                                          ),
+                                                        }.withoutNulls,
+                                                      );
+                                                    },
+                                                    child: Text(
+                                                      columnFormsRow.uuid,
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodySmall
+                                                              .override(
+                                                                fontFamily:
+                                                                    'Montserrat',
+                                                                color: const Color(
+                                                                    0xFF418ABD),
                                                               ),
-                                                            );
-                                                          }
-                                                          int containerCount =
-                                                              snapshot.data!;
-                                                          return Container(
-                                                            decoration:
-                                                                const BoxDecoration(),
-                                                            child: Text(
-                                                              '${containerCount.toString()} questions',
-                                                              style: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .bodyMedium,
-                                                            ),
-                                                          );
-                                                        },
+                                                    ),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  flex: 2,
+                                                  child: Text(
+                                                    columnFormsRow.name,
+                                                    style: FlutterFlowTheme.of(
+                                                            context)
+                                                        .bodySmall,
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  flex: 3,
+                                                  child: FutureBuilder<
+                                                      List<FieldsRow>>(
+                                                    future:
+                                                        FieldsTable().queryRows(
+                                                      queryFn: (q) => q.eq(
+                                                        'form_id',
+                                                        columnFormsRow.id,
                                                       ),
                                                     ),
-                                                  ]
-                                                      .divide(
-                                                          const SizedBox(width: 16.0))
-                                                      .around(const SizedBox(
-                                                          width: 16.0)),
+                                                    builder:
+                                                        (context, snapshot) {
+                                                      // Customize what your widget looks like when it's loading.
+                                                      if (!snapshot.hasData) {
+                                                        return Center(
+                                                          child:
+                                                              LinearProgressIndicator(
+                                                            color: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .primary,
+                                                          ),
+                                                        );
+                                                      }
+                                                      List<FieldsRow>
+                                                          containerFieldsRowList =
+                                                          snapshot.data!;
+                                                      return Container(
+                                                        decoration:
+                                                            const BoxDecoration(),
+                                                        child: Text(
+                                                          '${containerFieldsRowList.length.toString()} questions',
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .bodySmall,
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
                                                 ),
-                                              ),
-                                              Divider(
-                                                height: 4.0,
-                                                thickness: 1.0,
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .accent1,
-                                              ),
-                                            ],
+                                              ]
+                                                  .divide(const SizedBox(width: 16.0))
+                                                  .around(
+                                                      const SizedBox(width: 16.0)),
+                                            ),
                                           ),
                                         );
                                       }),
