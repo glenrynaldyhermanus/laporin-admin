@@ -113,73 +113,55 @@ class _UsersWidgetState extends State<UsersWidget> {
                                               .primaryBackground,
                                           border: Border.all(
                                             color: const Color(0x1A636F81),
+                                            width: 1.0,
                                           ),
                                         ),
-                                        child: Column(
+                                        child: Row(
                                           mainAxisSize: MainAxisSize.max,
                                           children: [
                                             Expanded(
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Expanded(
-                                                    child: Text(
-                                                      'UUID',
-                                                      style:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodySmall,
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Text(
-                                                      'Email',
-                                                      style:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodySmall,
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Text(
-                                                      'Name',
-                                                      style:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodySmall,
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Text(
-                                                      'Gender',
-                                                      style:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodySmall,
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Text(
-                                                      'Birthdate',
-                                                      style:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodySmall,
-                                                    ),
-                                                  ),
-                                                ]
-                                                    .divide(
-                                                        const SizedBox(width: 16.0))
-                                                    .around(
-                                                        const SizedBox(width: 16.0)),
+                                              child: Text(
+                                                'UUID',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodySmall,
                                               ),
                                             ),
-                                            const Divider(
-                                              height: 1.0,
-                                              thickness: 1.0,
-                                              color: Color(0x32636F81),
+                                            Expanded(
+                                              child: Text(
+                                                'Email',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodySmall,
+                                              ),
                                             ),
-                                          ],
+                                            Expanded(
+                                              child: Text(
+                                                'Name',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodySmall,
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                'Gender',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodySmall,
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                'Birthdate',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodySmall,
+                                              ),
+                                            ),
+                                          ]
+                                              .divide(const SizedBox(width: 16.0))
+                                              .around(const SizedBox(width: 16.0)),
                                         ),
                                       ),
                                       FutureBuilder<List<UsersRow>>(
@@ -262,7 +244,10 @@ class _UsersWidgetState extends State<UsersWidget> {
                                                       Expanded(
                                                         child: Text(
                                                           columnUsersRow
-                                                              .gender!,
+                                                                      .gender ==
+                                                                  'm'
+                                                              ? 'Male'
+                                                              : 'Female',
                                                           style: FlutterFlowTheme
                                                                   .of(context)
                                                               .bodySmall,

@@ -109,6 +109,7 @@ class _FormsWidgetState extends State<FormsWidget> {
                                         .primaryBackground,
                                     border: Border.all(
                                       color: const Color(0x1A636F81),
+                                      width: 1.0,
                                     ),
                                   ),
                                   child: Row(
@@ -122,7 +123,7 @@ class _FormsWidgetState extends State<FormsWidget> {
                                         ),
                                       ),
                                       Expanded(
-                                        flex: 2,
+                                        flex: 1,
                                         child: Text(
                                           'Name',
                                           style: FlutterFlowTheme.of(context)
@@ -130,7 +131,7 @@ class _FormsWidgetState extends State<FormsWidget> {
                                         ),
                                       ),
                                       Expanded(
-                                        flex: 3,
+                                        flex: 2,
                                         child: Text(
                                           'No Of Questions',
                                           style: FlutterFlowTheme.of(context)
@@ -231,7 +232,7 @@ class _FormsWidgetState extends State<FormsWidget> {
                                                   ),
                                                 ),
                                                 Expanded(
-                                                  flex: 2,
+                                                  flex: 1,
                                                   child: Text(
                                                     columnFormsRow.name,
                                                     style: FlutterFlowTheme.of(
@@ -240,7 +241,7 @@ class _FormsWidgetState extends State<FormsWidget> {
                                                   ),
                                                 ),
                                                 Expanded(
-                                                  flex: 3,
+                                                  flex: 2,
                                                   child: FutureBuilder<
                                                       List<FieldsRow>>(
                                                     future:

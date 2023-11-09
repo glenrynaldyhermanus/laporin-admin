@@ -135,54 +135,40 @@ class _HomeWidgetState extends State<HomeWidget> {
                                                       color: const Color(0x19636F81),
                                                     ),
                                                   ),
-                                                  child: Column(
+                                                  child: Row(
                                                     mainAxisSize:
                                                         MainAxisSize.max,
                                                     children: [
                                                       Expanded(
-                                                        child: Row(
-                                                          mainAxisSize:
-                                                              MainAxisSize.max,
-                                                          children: [
-                                                            Expanded(
-                                                              flex: 2,
-                                                              child: Text(
-                                                                'User',
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodySmall,
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Text(
-                                                                'Clock In',
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodySmall,
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Text(
-                                                                'Clock Out',
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodySmall,
-                                                              ),
-                                                            ),
-                                                          ]
-                                                              .divide(const SizedBox(
-                                                                  width: 16.0))
-                                                              .around(const SizedBox(
-                                                                  width: 16.0)),
+                                                        flex: 2,
+                                                        child: Text(
+                                                          'User',
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .bodySmall,
                                                         ),
                                                       ),
-                                                      const Divider(
-                                                        height: 1.0,
-                                                        thickness: 1.0,
-                                                        color:
-                                                            Color(0x32636F81),
+                                                      Expanded(
+                                                        child: Text(
+                                                          'Clock In',
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .bodySmall,
+                                                        ),
                                                       ),
-                                                    ],
+                                                      Expanded(
+                                                        child: Text(
+                                                          'Clock Out',
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .bodySmall,
+                                                        ),
+                                                      ),
+                                                    ]
+                                                        .divide(const SizedBox(
+                                                            width: 16.0))
+                                                        .around(const SizedBox(
+                                                            width: 16.0)),
                                                   ),
                                                 ),
                                                 FutureBuilder<List<UsersRow>>(

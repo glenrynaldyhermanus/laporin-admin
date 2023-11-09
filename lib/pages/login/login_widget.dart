@@ -446,12 +446,12 @@ class _LoginWidgetState extends State<LoginWidget> {
                                     text: TextSpan(
                                       children: [
                                         TextSpan(
-                                          text: 'Don\'t have an account? ',
+                                          text: 'Need a demo?',
                                           style: FlutterFlowTheme.of(context)
                                               .bodyMedium,
                                         ),
                                         TextSpan(
-                                          text: ' Sign Up here',
+                                          text: ' Contact Us ',
                                           style: FlutterFlowTheme.of(context)
                                               .bodyMedium
                                               .override(

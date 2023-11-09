@@ -116,10 +116,11 @@ class _TasksWidgetState extends State<TasksWidget> {
                                           color: FlutterFlowTheme.of(context)
                                               .primaryBackground,
                                           border: Border.all(
-                                            color: const Color(0x19636F81),
+                                            color: const Color(0x1A636F81),
+                                            width: 1.0,
                                           ),
                                         ),
-                                        child: Column(
+                                        child: Row(
                                           mainAxisSize: MainAxisSize.max,
                                           children: [
                                             Expanded(
@@ -127,86 +128,80 @@ class _TasksWidgetState extends State<TasksWidget> {
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: [
                                                   Expanded(
-                                                    child: Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.max,
-                                                      children: [
-                                                        Expanded(
-                                                          child: Text(
-                                                            'UUID',
-                                                            style: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .bodySmall,
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          child: Text(
-                                                            'Name',
-                                                            style: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .bodySmall,
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          child: Text(
-                                                            'Description',
-                                                            style: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .bodySmall,
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          child: Text(
-                                                            'Form',
-                                                            style: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .bodySmall,
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          child: Text(
-                                                            'Location',
-                                                            style: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .bodySmall,
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          child: Text(
-                                                            'Due Date',
-                                                            style: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .bodySmall,
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          child: Text(
-                                                            'Status',
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            style: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .bodySmall,
-                                                          ),
-                                                        ),
-                                                      ]
-                                                          .divide(const SizedBox(
-                                                              width: 16.0))
-                                                          .around(const SizedBox(
-                                                              width: 16.0)),
+                                                    child: Text(
+                                                      'UUID',
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodySmall,
                                                     ),
                                                   ),
-                                                  Container(
-                                                    width: 160.0,
-                                                    decoration: const BoxDecoration(),
+                                                  Expanded(
+                                                    child: Text(
+                                                      'Name',
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodySmall,
+                                                    ),
                                                   ),
-                                                ],
+                                                  Expanded(
+                                                    child: Text(
+                                                      'Description',
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodySmall,
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      'Form',
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodySmall,
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      'Location',
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodySmall,
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      'Due Date',
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodySmall,
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      'Status',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodySmall,
+                                                    ),
+                                                  ),
+                                                ]
+                                                    .divide(
+                                                        const SizedBox(width: 16.0))
+                                                    .around(
+                                                        const SizedBox(width: 16.0)),
                                               ),
                                             ),
-                                            const Divider(
-                                              height: 1.0,
-                                              thickness: 1.0,
-                                              color: Color(0x32636F81),
+                                            Container(
+                                              width: 160.0,
+                                              decoration: const BoxDecoration(),
                                             ),
                                           ],
                                         ),
@@ -522,13 +517,19 @@ class _TasksWidgetState extends State<TasksWidget> {
                                                             ),
                                                             Expanded(
                                                               child: Text(
-                                                                valueOrDefault<
-                                                                    String>(
-                                                                  columnTasksRow
-                                                                      .status
-                                                                      ?.toString(),
-                                                                  '1',
-                                                                ),
+                                                                () {
+                                                                  if (columnTasksRow
+                                                                          .status ==
+                                                                      0) {
+                                                                    return 'New';
+                                                                  } else if (columnTasksRow
+                                                                          .status ==
+                                                                      1) {
+                                                                    return 'Assigned';
+                                                                  } else {
+                                                                    return 'Done';
+                                                                  }
+                                                                }(),
                                                                 textAlign:
                                                                     TextAlign
                                                                         .center,
