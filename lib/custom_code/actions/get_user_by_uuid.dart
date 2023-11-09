@@ -9,11 +9,11 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
-Future<UsersRow?> getUserById(String userUid) async {
+Future<UsersRow?> getUserByUuid(String userUid) async {
   // return UsersRow supabase where uuid eq userUid return null if empty
   final result = await UsersTable().queryRows(
     queryFn: (q) => q.eq(
-      'id',
+      'uuid',
       userUid,
     ),
   );

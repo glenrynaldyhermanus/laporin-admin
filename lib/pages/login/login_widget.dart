@@ -279,7 +279,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                         return;
                                       }
 
-                                      _model.user = await actions.getUserById(
+                                      _model.user = await actions.getUserByUuid(
                                         currentUserUid,
                                       );
                                       shouldSetState = true;

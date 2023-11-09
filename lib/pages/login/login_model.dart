@@ -16,7 +16,7 @@ class LoginModel extends FlutterFlowModel<LoginWidget> {
   TextEditingController? passwordController;
   late bool passwordVisibility;
   String? Function(BuildContext, String?)? passwordControllerValidator;
-  // Stores action output result for [Custom Action - getUserById] action in Button widget.
+  // Stores action output result for [Custom Action - getUserByUuid] action in Button widget.
   UsersRow? user;
   // Stores action output result for [Custom Action - getActiveBusiness] action in Button widget.
   BusinessUsersRow? activeBusiness;
