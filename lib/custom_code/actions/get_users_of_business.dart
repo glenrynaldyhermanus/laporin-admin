@@ -10,10 +10,14 @@ import 'package:flutter/material.dart';
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
 Future<List<UsersRow>> getUsersOfBusiness(int businessId) async {
-  final data = await SupaFlow.client
+  final datas = await SupaFlow.client
       .from('users')
-      .select('id, name, businesses(id, name)')
-      .eq('businesses.id', businessId);
+      .select('id, name, business_users(id, role_id)');
 
-  return data;
+  List<UsersRow> users = [];
+  for (var data in datas) {
+    users.add(UsersRow(data));
+  }
+
+  return users;
 }
