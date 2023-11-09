@@ -1,13 +1,15 @@
-import '/auth/supabase_auth/auth_util.dart';
-import '/backend/schema/structs/index.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import '/custom_code/actions/index.dart' as actions;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+
+import '/auth/supabase_auth/auth_util.dart';
+import '/backend/schema/structs/index.dart';
+import '/custom_code/actions/index.dart' as actions;
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_util.dart';
+import '/flutter_flow/flutter_flow_widgets.dart';
 import 'login_model.dart';
+
 export 'login_model.dart';
 
 class LoginWidget extends StatefulWidget {
@@ -140,7 +142,9 @@ class _LoginWidgetState extends State<LoginWidget> {
                                       controller: _model.emailAddressController,
                                       focusNode: _model.emailAddressFocusNode,
                                       autofocus: true,
-                                      autofillHints: const [AutofillHints.email],
+                                      autofillHints: const [
+                                        AutofillHints.email
+                                      ],
                                       obscureText: false,
                                       decoration: InputDecoration(
                                         labelText: 'Email',
@@ -198,7 +202,9 @@ class _LoginWidgetState extends State<LoginWidget> {
                                       controller: _model.passwordController,
                                       focusNode: _model.passwordFocusNode,
                                       autofocus: true,
-                                      autofillHints: const [AutofillHints.password],
+                                      autofillHints: const [
+                                        AutofillHints.password
+                                      ],
                                       obscureText: !_model.passwordVisibility,
                                       decoration: InputDecoration(
                                         labelText: 'Password',
@@ -296,8 +302,11 @@ class _LoginWidgetState extends State<LoginWidget> {
                                           _model.user!.id,
                                         );
                                         shouldSetState = true;
+
+                                        print(_model.activeBusiness);
+
                                         if (_model.activeBusiness?.roleId ==
-                                            0) {
+                                            1) {
                                           _model.business =
                                               await actions.getBusinessById(
                                             _model.activeBusiness!.id,
@@ -329,8 +338,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                                                       .primaryText,
                                                 ),
                                               ),
-                                              duration:
-                                                  const Duration(milliseconds: 4000),
+                                              duration: const Duration(
+                                                  milliseconds: 4000),
                                               backgroundColor:
                                                   FlutterFlowTheme.of(context)
                                                       .secondary,
@@ -354,8 +363,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                                                       .primaryText,
                                                 ),
                                               ),
-                                              duration:
-                                                  const Duration(milliseconds: 4000),
+                                              duration: const Duration(
+                                                  milliseconds: 4000),
                                               backgroundColor:
                                                   FlutterFlowTheme.of(context)
                                                       .secondary,
@@ -382,8 +391,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                                                         .primaryText,
                                               ),
                                             ),
-                                            duration:
-                                                const Duration(milliseconds: 4000),
+                                            duration: const Duration(
+                                                milliseconds: 4000),
                                             backgroundColor:
                                                 FlutterFlowTheme.of(context)
                                                     .secondary,
@@ -407,8 +416,9 @@ class _LoginWidgetState extends State<LoginWidget> {
                                     options: FFButtonOptions(
                                       width: 370.0,
                                       height: 44.0,
-                                      padding: const EdgeInsetsDirectional.fromSTEB(
-                                          0.0, 0.0, 0.0, 0.0),
+                                      padding:
+                                          const EdgeInsetsDirectional.fromSTEB(
+                                              0.0, 0.0, 0.0, 0.0),
                                       iconPadding:
                                           const EdgeInsetsDirectional.fromSTEB(
                                               0.0, 0.0, 0.0, 0.0),
@@ -480,8 +490,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                 Expanded(
                   flex: 6,
                   child: Padding(
-                    padding:
-                        const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 16.0),
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                        16.0, 16.0, 16.0, 16.0),
                     child: Container(
                       width: 100.0,
                       height: double.infinity,
