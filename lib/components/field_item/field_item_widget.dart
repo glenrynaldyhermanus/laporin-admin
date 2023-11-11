@@ -45,7 +45,18 @@ class _FieldItemWidgetState extends State<FieldItemWidget> {
     _model.nameController ??=
         TextEditingController(text: widget.field?.question);
     _model.nameFocusNode ??= FocusNode();
-
+    _model.nameFocusNode!.addListener(
+      () async {
+        if ((_model.nameFocusNode?.hasFocus ?? false)) {
+          FFAppState().update(() {
+            FFAppState().formLoading = true;
+          });
+          return;
+        } else {
+          return;
+        }
+      },
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
@@ -161,7 +172,7 @@ class _FieldItemWidgetState extends State<FieldItemWidget> {
                               '_model.nameController',
                               const Duration(milliseconds: 2000),
                               () async {
-                                setState(() {
+                                FFAppState().update(() {
                                   FFAppState().formLoading = true;
                                 });
                                 await FieldsTable().update(
@@ -173,7 +184,7 @@ class _FieldItemWidgetState extends State<FieldItemWidget> {
                                     widget.field?.id,
                                   ),
                                 );
-                                setState(() {
+                                FFAppState().update(() {
                                   FFAppState().formLoading = false;
                                 });
                               },
