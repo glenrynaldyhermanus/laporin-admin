@@ -1,5 +1,4 @@
 import '/backend/supabase/supabase.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +51,7 @@ class _FieldOptionWidgetState extends State<FieldOptionWidget> {
     context.watch<FFAppState>();
 
     return Container(
+      width: 160.0,
       decoration: BoxDecoration(
         color: FlutterFlowTheme.of(context).primaryBackground,
       ),
@@ -97,30 +97,10 @@ class _FieldOptionWidgetState extends State<FieldOptionWidget> {
                 filled: true,
                 fillColor: const Color(0xFFF1F4F8),
               ),
-              style: FlutterFlowTheme.of(context).bodyMedium,
+              style: FlutterFlowTheme.of(context).bodySmall,
               keyboardType: TextInputType.emailAddress,
               validator: _model.optionsControllerValidator.asValidator(context),
             ),
-          ),
-          FlutterFlowIconButton(
-            borderRadius: 20.0,
-            borderWidth: 1.0,
-            buttonSize: 40.0,
-            icon: const Icon(
-              Icons.delete_sweep_outlined,
-              color: Color(0xB2EE4444),
-              size: 24.0,
-            ),
-            showLoadingIndicator: true,
-            onPressed: () async {
-              await FieldOptionsTable().delete(
-                matchingRows: (rows) => rows.eq(
-                  'id',
-                  widget.fieldOption?.id,
-                ),
-              );
-              FFAppState().update(() {});
-            },
           ),
         ].divide(const SizedBox(width: 16.0)),
       ),

@@ -177,12 +177,6 @@ class _NewFormDialogWidgetState extends State<NewFormDialogWidget> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text(
-                                              'Form Name',
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium,
-                                            ),
                                             SizedBox(
                                               width: double.infinity,
                                               child: TextFormField(
@@ -242,7 +236,7 @@ class _NewFormDialogWidgetState extends State<NewFormDialogWidget> {
                                                 ),
                                                 style:
                                                     FlutterFlowTheme.of(context)
-                                                        .bodyMedium,
+                                                        .bodySmall,
                                                 keyboardType:
                                                     TextInputType.emailAddress,
                                                 validator: _model
@@ -298,16 +292,56 @@ class _NewFormDialogWidgetState extends State<NewFormDialogWidget> {
                                           padding:
                                               const EdgeInsetsDirectional.fromSTEB(
                                                   16.0, 0.0, 16.0, 0.0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
+                                          child: Stack(
                                             children: [
-                                              Expanded(
-                                                child: FieldItemWidget(
-                                                  key: Key(
-                                                      'Keyo88_${columnIndex}_of_${columnFieldsRowList.length}'),
-                                                  field: columnFieldsRow,
-                                                  fieldTypes:
-                                                      materialDialog4FieldTypesRowList,
+                                              FieldItemWidget(
+                                                key: Key(
+                                                    'Keyo88_${columnIndex}_of_${columnFieldsRowList.length}'),
+                                                field: columnFieldsRow,
+                                                fieldTypes:
+                                                    materialDialog4FieldTypesRowList,
+                                              ),
+                                              Align(
+                                                alignment: const AlignmentDirectional(
+                                                    1.00, 0.00),
+                                                child: Padding(
+                                                  padding: const EdgeInsetsDirectional
+                                                      .fromSTEB(
+                                                          0.0, 12.0, 16.0, 0.0),
+                                                  child: FlutterFlowIconButton(
+                                                    borderRadius: 16.0,
+                                                    borderWidth: 1.0,
+                                                    buttonSize: 32.0,
+                                                    fillColor:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .accent3,
+                                                    icon: Icon(
+                                                      Icons
+                                                          .delete_forever_sharp,
+                                                      color:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .error,
+                                                      size: 16.0,
+                                                    ),
+                                                    showLoadingIndicator: true,
+                                                    onPressed: () async {
+                                                      await FieldsTable()
+                                                          .delete(
+                                                        matchingRows: (rows) =>
+                                                            rows.eq(
+                                                          'id',
+                                                          columnFieldsRow.id,
+                                                        ),
+                                                      );
+                                                      setState(() => _model
+                                                              .requestCompleter =
+                                                          null);
+                                                      await _model
+                                                          .waitForRequestCompleted();
+                                                    },
+                                                  ),
                                                 ),
                                               ),
                                             ],
@@ -321,17 +355,20 @@ class _NewFormDialogWidgetState extends State<NewFormDialogWidget> {
                                   padding: const EdgeInsetsDirectional.fromSTEB(
                                       16.0, 0.0, 16.0, 0.0),
                                   child: FFButtonWidget(
-                                    onPressed: () async {
-                                      await FieldsTable().insert({
-                                        'field_type_id': 1,
-                                        'page_id': columnPagesRow?.id,
-                                        'question': 'New Question',
-                                        'form_id': widget.form?.id,
-                                      });
-                                      setState(
-                                          () => _model.requestCompleter = null);
-                                      await _model.waitForRequestCompleted();
-                                    },
+                                    onPressed: FFAppState().formLoading
+                                        ? null
+                                        : () async {
+                                            await FieldsTable().insert({
+                                              'field_type_id': 1,
+                                              'page_id': columnPagesRow?.id,
+                                              'question': 'New Question',
+                                              'form_id': widget.form?.id,
+                                            });
+                                            setState(() =>
+                                                _model.requestCompleter = null);
+                                            await _model
+                                                .waitForRequestCompleted();
+                                          },
                                     text: 'Add New Field',
                                     icon: const Icon(
                                       Icons.add,
@@ -348,7 +385,7 @@ class _NewFormDialogWidgetState extends State<NewFormDialogWidget> {
                                       color: FlutterFlowTheme.of(context)
                                           .primaryBackground,
                                       textStyle: FlutterFlowTheme.of(context)
-                                          .titleSmall
+                                          .bodySmall
                                           .override(
                                             fontFamily: 'Montserrat',
                                             color: FlutterFlowTheme.of(context)
@@ -361,6 +398,7 @@ class _NewFormDialogWidgetState extends State<NewFormDialogWidget> {
                                         width: 1.0,
                                       ),
                                       borderRadius: BorderRadius.circular(8.0),
+                                      disabledTextColor: const Color(0x80636F81),
                                     ),
                                   ),
                                 ),

@@ -193,6 +193,12 @@ class FFAppState extends ChangeNotifier {
     prefs.setStringList(
         'ff_formActions', _formActions.map((x) => x.serialize()).toList());
   }
+
+  bool _formLoading = false;
+  bool get formLoading => _formLoading;
+  set formLoading(bool value) {
+    _formLoading = value;
+  }
 }
 
 LatLng? _latLngFromString(String? val) {
