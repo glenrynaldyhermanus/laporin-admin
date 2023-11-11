@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 
-import '/backend/supabase/supabase.dart';
+
 import '/auth/base_auth_user_provider.dart';
 
 import '/index.dart';
@@ -110,14 +110,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           path: '/users',
           requireAuth: true,
           builder: (context, params) => const UsersWidget(),
-        ),
-        FFRoute(
-          name: 'FormBuilder',
-          path: '/forms/builder',
-          requireAuth: true,
-          builder: (context, params) => FormBuilderWidget(
-            form: params.getParam<FormsRow>('form', ParamType.SupabaseRow),
-          ),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );

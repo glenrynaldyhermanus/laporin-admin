@@ -17,6 +17,8 @@ class AssignmentDialogModel extends FlutterFlowModel<AssignmentDialogWidget> {
   void updateBusinessUsersAtIndex(int index, Function(UsersRow) updateFn) =>
       businessUsers[index] = updateFn(businessUsers[index]);
 
+  int? selectedUserIndex;
+
   ///  State fields for stateful widgets in this component.
 
   // Stores action output result for [Custom Action - getUsersOfBusiness] action in AssignmentDialog widget.
@@ -24,6 +26,8 @@ class AssignmentDialogModel extends FlutterFlowModel<AssignmentDialogWidget> {
   // State field(s) for DropDown widget.
   String? dropDownValue;
   FormFieldController<String>? dropDownValueController;
+  // Stores action output result for [Custom Action - getUserByUuid] action in Button widget.
+  UsersRow? selectedUser;
 
   /// Initialization and disposal methods.
 

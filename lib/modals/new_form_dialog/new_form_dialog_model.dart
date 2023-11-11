@@ -1,25 +1,17 @@
 import '/backend/supabase/supabase.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/form_field_controller.dart';
 import 'dart:async';
-import 'field_item_widget.dart' show FieldItemWidget;
+import 'new_form_dialog_widget.dart' show NewFormDialogWidget;
 import 'package:flutter/material.dart';
 
-class FieldItemModel extends FlutterFlowModel<FieldItemWidget> {
-  ///  Local state fields for this component.
-
-  bool active = false;
-
+class NewFormDialogModel extends FlutterFlowModel<NewFormDialogWidget> {
   ///  State fields for stateful widgets in this component.
 
-  // State field(s) for DropDown widget.
-  int? dropDownValue;
-  FormFieldController<int>? dropDownValueController;
   // State field(s) for name widget.
   FocusNode? nameFocusNode;
   TextEditingController? nameController;
   String? Function(BuildContext, String?)? nameControllerValidator;
-  Completer<List<FieldOptionsRow>>? requestCompleter;
+  Completer<List<FieldsRow>>? requestCompleter;
 
   /// Initialization and disposal methods.
 

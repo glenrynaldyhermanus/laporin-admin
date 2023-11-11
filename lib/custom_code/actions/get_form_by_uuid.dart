@@ -9,15 +9,17 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
-Future<List<UsersRow>> getUsersOfBusiness(int businessId) async {
-  final datas = await SupaFlow.client
-      .from('users')
-      .select('id, uuid, name, business_users(id, role_id)');
+Future<FormsRow?> getFormByUuid(String formUuid) async {
+  // return UsersRow supabase where uuid eq userUid return null if empty
+  final result = await FormsTable().queryRows(
+    queryFn: (q) => q.eq(
+      'uuid',
+      formUuid,
+    ),
+  );
 
-  List<UsersRow> users = [];
-  for (var data in datas) {
-    users.add(UsersRow(data));
+  if (result.isNotEmpty) {
+    return result[0];
   }
-
-  return users;
+  return null;
 }

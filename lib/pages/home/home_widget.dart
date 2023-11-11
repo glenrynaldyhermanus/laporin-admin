@@ -7,7 +7,6 @@ import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:aligned_tooltip/aligned_tooltip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'home_model.dart';
 export 'home_model.dart';
@@ -96,7 +95,6 @@ class _HomeWidgetState extends State<HomeWidget> {
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Expanded(
-                                    flex: 3,
                                     child: Column(
                                       mainAxisSize: MainAxisSize.max,
                                       crossAxisAlignment:
@@ -180,16 +178,11 @@ class _HomeWidgetState extends State<HomeWidget> {
                                                     // Customize what your widget looks like when it's loading.
                                                     if (!snapshot.hasData) {
                                                       return Center(
-                                                        child: SizedBox(
-                                                          width: 50.0,
-                                                          height: 50.0,
-                                                          child:
-                                                              SpinKitFoldingCube(
-                                                            color: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .primary,
-                                                            size: 50.0,
-                                                          ),
+                                                        child:
+                                                            LinearProgressIndicator(
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primary,
                                                         ),
                                                       );
                                                     }
@@ -292,29 +285,19 @@ class _HomeWidgetState extends State<HomeWidget> {
                                                                   ),
                                                                 ),
                                                                 Expanded(
-                                                                  flex: 2,
-                                                                  child: Row(
-                                                                    mainAxisSize:
-                                                                        MainAxisSize
-                                                                            .max,
-                                                                    children: [
-                                                                      Expanded(
-                                                                        child:
-                                                                            Text(
-                                                                          'Name',
-                                                                          style:
-                                                                              FlutterFlowTheme.of(context).bodySmall,
-                                                                        ),
-                                                                      ),
-                                                                      Expanded(
-                                                                        child:
-                                                                            Text(
-                                                                          'Name',
-                                                                          style:
-                                                                              FlutterFlowTheme.of(context).bodySmall,
-                                                                        ),
-                                                                      ),
-                                                                    ],
+                                                                  child: Text(
+                                                                    'Name',
+                                                                    style: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodySmall,
+                                                                  ),
+                                                                ),
+                                                                Expanded(
+                                                                  child: Text(
+                                                                    'Name',
+                                                                    style: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodySmall,
                                                                   ),
                                                                 ),
                                                               ]
@@ -339,14 +322,14 @@ class _HomeWidgetState extends State<HomeWidget> {
                                     ),
                                   ),
                                   Expanded(
-                                    flex: 7,
+                                    flex: 3,
                                     child: Column(
                                       mainAxisSize: MainAxisSize.max,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Responses',
+                                          'Activities',
                                           style: FlutterFlowTheme.of(context)
                                               .bodyLarge,
                                         ),
@@ -360,6 +343,9 @@ class _HomeWidgetState extends State<HomeWidget> {
                                               color:
                                                   FlutterFlowTheme.of(context)
                                                       .primaryBackground,
+                                              border: Border.all(
+                                                color: const Color(0x1A636F81),
+                                              ),
                                             ),
                                             child: Column(
                                               mainAxisSize: MainAxisSize.max,
@@ -370,15 +356,19 @@ class _HomeWidgetState extends State<HomeWidget> {
                                                   decoration: BoxDecoration(
                                                     color: FlutterFlowTheme.of(
                                                             context)
-                                                        .accent1,
+                                                        .primaryBackground,
+                                                    border: Border.all(
+                                                      color: const Color(0x19636F81),
+                                                    ),
                                                   ),
                                                   child: Row(
                                                     mainAxisSize:
                                                         MainAxisSize.max,
                                                     children: [
                                                       Expanded(
+                                                        flex: 2,
                                                         child: Text(
-                                                          'User',
+                                                          'Task',
                                                           style: FlutterFlowTheme
                                                                   .of(context)
                                                               .bodySmall,
@@ -386,7 +376,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                                       ),
                                                       Expanded(
                                                         child: Text(
-                                                          'Clock In',
+                                                          'Assignees',
                                                           style: FlutterFlowTheme
                                                                   .of(context)
                                                               .bodySmall,
@@ -394,7 +384,15 @@ class _HomeWidgetState extends State<HomeWidget> {
                                                       ),
                                                       Expanded(
                                                         child: Text(
-                                                          'Clock Out',
+                                                          'Status',
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .bodySmall,
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          'Responses',
                                                           style: FlutterFlowTheme
                                                                   .of(context)
                                                               .bodySmall,
@@ -407,70 +405,158 @@ class _HomeWidgetState extends State<HomeWidget> {
                                                             width: 16.0)),
                                                   ),
                                                 ),
-                                                Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.max,
-                                                  children: [
-                                                    Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.max,
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                      0.0,
-                                                                      8.0,
-                                                                      0.0,
-                                                                      8.0),
-                                                          child: Row(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .max,
-                                                            children: [
-                                                              Expanded(
-                                                                child: Text(
-                                                                  'UUID',
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .bodySmall,
-                                                                ),
-                                                              ),
-                                                              Expanded(
-                                                                child: Text(
-                                                                  'Name',
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .bodySmall,
-                                                                ),
-                                                              ),
-                                                              Expanded(
-                                                                child: Text(
-                                                                  'Name',
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .bodySmall,
-                                                                ),
-                                                              ),
-                                                            ]
-                                                                .divide(const SizedBox(
-                                                                    width:
-                                                                        16.0))
-                                                                .around(const SizedBox(
-                                                                    width:
-                                                                        16.0)),
-                                                          ),
-                                                        ),
-                                                        Divider(
-                                                          height: 8.0,
-                                                          thickness: 1.0,
+                                                FutureBuilder<List<UsersRow>>(
+                                                  future:
+                                                      UsersTable().queryRows(
+                                                    queryFn: (q) => q,
+                                                  ),
+                                                  builder: (context, snapshot) {
+                                                    // Customize what your widget looks like when it's loading.
+                                                    if (!snapshot.hasData) {
+                                                      return Center(
+                                                        child:
+                                                            LinearProgressIndicator(
                                                           color: FlutterFlowTheme
                                                                   .of(context)
-                                                              .accent1,
+                                                              .primary,
                                                         ),
-                                                      ],
-                                                    ),
-                                                  ],
+                                                      );
+                                                    }
+                                                    List<UsersRow>
+                                                        columnUsersRowList =
+                                                        snapshot.data!;
+                                                    return Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      children: List.generate(
+                                                          columnUsersRowList
+                                                              .length,
+                                                          (columnIndex) {
+                                                        final columnUsersRow =
+                                                            columnUsersRowList[
+                                                                columnIndex];
+                                                        return Container(
+                                                          width:
+                                                              double.infinity,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: functions.isEven(
+                                                                    columnIndex)
+                                                                ? FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .primaryBackground
+                                                                : FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .secondaryBackground,
+                                                            border: Border.all(
+                                                              color: const Color(
+                                                                  0x0D636F81),
+                                                            ),
+                                                          ),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsetsDirectional
+                                                                    .fromSTEB(
+                                                                        0.0,
+                                                                        8.0,
+                                                                        0.0,
+                                                                        8.0),
+                                                            child: Row(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .max,
+                                                              children: [
+                                                                Expanded(
+                                                                  flex: 2,
+                                                                  child:
+                                                                      AlignedTooltip(
+                                                                    content:
+                                                                        Padding(
+                                                                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                                                                4.0,
+                                                                                4.0,
+                                                                                4.0,
+                                                                                4.0),
+                                                                            child:
+                                                                                Text(
+                                                                              columnUsersRow.name,
+                                                                              style: FlutterFlowTheme.of(context).bodyLarge,
+                                                                            )),
+                                                                    offset: 4.0,
+                                                                    preferredDirection:
+                                                                        AxisDirection
+                                                                            .down,
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            8.0),
+                                                                    backgroundColor:
+                                                                        FlutterFlowTheme.of(context)
+                                                                            .secondaryBackground,
+                                                                    elevation:
+                                                                        4.0,
+                                                                    tailBaseWidth:
+                                                                        24.0,
+                                                                    tailLength:
+                                                                        12.0,
+                                                                    waitDuration:
+                                                                        const Duration(
+                                                                            milliseconds:
+                                                                                100),
+                                                                    showDuration:
+                                                                        const Duration(
+                                                                            milliseconds:
+                                                                                1000),
+                                                                    triggerMode:
+                                                                        TooltipTriggerMode
+                                                                            .tap,
+                                                                    child: Text(
+                                                                      columnUsersRow
+                                                                          .name,
+                                                                      maxLines:
+                                                                          1,
+                                                                      style: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .bodySmall,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Expanded(
+                                                                  child: Text(
+                                                                    'Name',
+                                                                    style: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodySmall,
+                                                                  ),
+                                                                ),
+                                                                Expanded(
+                                                                  child: Text(
+                                                                    'Name',
+                                                                    style: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodySmall,
+                                                                  ),
+                                                                ),
+                                                                Expanded(
+                                                                  child: Text(
+                                                                    'Name',
+                                                                    style: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodySmall,
+                                                                  ),
+                                                                ),
+                                                              ]
+                                                                  .divide(const SizedBox(
+                                                                      width:
+                                                                          16.0))
+                                                                  .around(const SizedBox(
+                                                                      width:
+                                                                          16.0)),
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }),
+                                                    );
+                                                  },
                                                 ),
                                               ],
                                             ),

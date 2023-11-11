@@ -20,15 +20,18 @@ class FieldsRow extends SupabaseDataRow {
   DateTime get createdAt => getField<DateTime>('created_at')!;
   set createdAt(DateTime value) => setField<DateTime>('created_at', value);
 
-  int? get fieldTypeId => getField<int>('field_type_id');
-  set fieldTypeId(int? value) => setField<int>('field_type_id', value);
+  int get fieldTypeId => getField<int>('field_type_id')!;
+  set fieldTypeId(int value) => setField<int>('field_type_id', value);
 
-  int? get pageId => getField<int>('page_id');
-  set pageId(int? value) => setField<int>('page_id', value);
+  int get pageId => getField<int>('page_id')!;
+  set pageId(int value) => setField<int>('page_id', value);
 
   String get question => getField<String>('question')!;
   set question(String value) => setField<String>('question', value);
 
   int get formId => getField<int>('form_id')!;
   set formId(int value) => setField<int>('form_id', value);
+
+  String get uuid => getField<String>('uuid')!;
+  set uuid(String value) => setField<String>('uuid', value);
 }

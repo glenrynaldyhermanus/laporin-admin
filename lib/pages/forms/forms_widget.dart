@@ -3,10 +3,11 @@ import '/components/header/header_widget.dart';
 import '/components/side_bar/side_bar_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/modals/new_form_dialog/new_form_dialog_widget.dart';
 import '/flutter_flow/custom_functions.dart' as functions;
+import 'package:aligned_dialog/aligned_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'forms_model.dart';
 export 'forms_model.dart';
@@ -82,6 +83,7 @@ class _FormsWidgetState extends State<FormsWidget> {
                       wrapWithModel(
                         model: _model.headerModel,
                         updateCallback: () => setState(() {}),
+                        updateOnChange: true,
                         child: const HeaderWidget(),
                       ),
                       Expanded(
@@ -145,23 +147,15 @@ class _FormsWidgetState extends State<FormsWidget> {
                                 ),
                                 FutureBuilder<List<FormsRow>>(
                                   future: FormsTable().queryRows(
-                                    queryFn: (q) => q.eq(
-                                      'business_id',
-                                      FFAppState().authUser.businessId,
-                                    ),
+                                    queryFn: (q) => q,
                                   ),
                                   builder: (context, snapshot) {
                                     // Customize what your widget looks like when it's loading.
                                     if (!snapshot.hasData) {
                                       return Center(
-                                        child: SizedBox(
-                                          width: 50.0,
-                                          height: 50.0,
-                                          child: SpinKitFoldingCube(
-                                            color: FlutterFlowTheme.of(context)
-                                                .primary,
-                                            size: 50.0,
-                                          ),
+                                        child: LinearProgressIndicator(
+                                          color: FlutterFlowTheme.of(context)
+                                              .primary,
                                         ),
                                       );
                                     }
@@ -194,40 +188,75 @@ class _FormsWidgetState extends State<FormsWidget> {
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
                                                 Expanded(
-                                                  child: InkWell(
-                                                    splashColor:
-                                                        Colors.transparent,
-                                                    focusColor:
-                                                        Colors.transparent,
-                                                    hoverColor:
-                                                        Colors.transparent,
-                                                    highlightColor:
-                                                        Colors.transparent,
-                                                    onTap: () async {
-                                                      context.pushNamed(
-                                                        'FormBuilder',
-                                                        queryParameters: {
-                                                          'form':
-                                                              serializeParam(
-                                                            columnFormsRow,
-                                                            ParamType
-                                                                .SupabaseRow,
-                                                          ),
-                                                        }.withoutNulls,
-                                                      );
-                                                    },
-                                                    child: Text(
-                                                      columnFormsRow.uuid,
-                                                      style:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodySmall
-                                                              .override(
-                                                                fontFamily:
-                                                                    'Montserrat',
-                                                                color: const Color(
-                                                                    0xFF418ABD),
+                                                  child: Builder(
+                                                    builder: (context) =>
+                                                        InkWell(
+                                                      splashColor:
+                                                          Colors.transparent,
+                                                      focusColor:
+                                                          Colors.transparent,
+                                                      hoverColor:
+                                                          Colors.transparent,
+                                                      highlightColor:
+                                                          Colors.transparent,
+                                                      onTap: () async {
+                                                        await showAlignedDialog(
+                                                          context: context,
+                                                          isGlobal: true,
+                                                          avoidOverflow: false,
+                                                          targetAnchor:
+                                                              const AlignmentDirectional(
+                                                                      0.0, 0.0)
+                                                                  .resolve(
+                                                                      Directionality.of(
+                                                                          context)),
+                                                          followerAnchor:
+                                                              const AlignmentDirectional(
+                                                                      0.0, 0.0)
+                                                                  .resolve(
+                                                                      Directionality.of(
+                                                                          context)),
+                                                          builder:
+                                                              (dialogContext) {
+                                                            return Material(
+                                                              color: Colors
+                                                                  .transparent,
+                                                              child:
+                                                                  GestureDetector(
+                                                                onTap: () => _model
+                                                                        .unfocusNode
+                                                                        .canRequestFocus
+                                                                    ? FocusScope.of(
+                                                                            context)
+                                                                        .requestFocus(_model
+                                                                            .unfocusNode)
+                                                                    : FocusScope.of(
+                                                                            context)
+                                                                        .unfocus(),
+                                                                child:
+                                                                    NewFormDialogWidget(
+                                                                  form:
+                                                                      columnFormsRow,
+                                                                ),
                                                               ),
+                                                            );
+                                                          },
+                                                        ).then((value) =>
+                                                            setState(() {}));
+                                                      },
+                                                      child: Text(
+                                                        columnFormsRow.uuid,
+                                                        style:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodySmall
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Montserrat',
+                                                                  color: const Color(
+                                                                      0xFF418ABD),
+                                                                ),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -256,11 +285,19 @@ class _FormsWidgetState extends State<FormsWidget> {
                                                       // Customize what your widget looks like when it's loading.
                                                       if (!snapshot.hasData) {
                                                         return Center(
-                                                          child:
-                                                              LinearProgressIndicator(
-                                                            color: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .primary,
+                                                          child: SizedBox(
+                                                            width: 40.0,
+                                                            height: 40.0,
+                                                            child:
+                                                                CircularProgressIndicator(
+                                                              valueColor:
+                                                                  AlwaysStoppedAnimation<
+                                                                      Color>(
+                                                                FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .primary,
+                                                              ),
+                                                            ),
                                                           ),
                                                         );
                                                       }

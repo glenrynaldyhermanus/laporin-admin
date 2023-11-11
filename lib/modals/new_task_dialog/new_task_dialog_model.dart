@@ -1,3 +1,4 @@
+import '/backend/supabase/supabase.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/form_field_controller.dart';
 import 'new_task_dialog_widget.dart' show NewTaskDialogWidget;
@@ -22,6 +23,8 @@ class NewTaskDialogModel extends FlutterFlowModel<NewTaskDialogWidget> {
   String? dropDownValue;
   FormFieldController<String>? dropDownValueController;
   DateTime? datePicked;
+  // Stores action output result for [Custom Action - getFormByUuid] action in Button widget.
+  FormsRow? selectedForm;
 
   /// Initialization and disposal methods.
 

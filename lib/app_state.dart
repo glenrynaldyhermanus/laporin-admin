@@ -55,6 +55,21 @@ class FFAppState extends ChangeNotifier {
         }
       }
     });
+    _safeInit(() {
+      _formActions = prefs
+              .getStringList('ff_formActions')
+              ?.map((x) {
+                try {
+                  return ActionStruct.fromSerializableMap(jsonDecode(x));
+                } catch (e) {
+                  print("Can't decode persisted data type. Error: $e.");
+                  return null;
+                }
+              })
+              .withoutNulls
+              .toList() ??
+          _formActions;
+    });
   }
 
   void update(VoidCallback callback) {
@@ -131,6 +146,52 @@ class FFAppState extends ChangeNotifier {
   void updateAuthUserStruct(Function(UserStruct) updateFn) {
     updateFn(_authUser);
     prefs.setString('ff_authUser', _authUser.serialize());
+  }
+
+  List<ActionStruct> _formActions = [
+    ActionStruct.fromSerializableMap(jsonDecode(
+        '{"name":"Delete Form","type":"action","action":"DeleteForm","icon_type":"-1"}')),
+    ActionStruct.fromSerializableMap(jsonDecode(
+        '{"name":"Save Form","type":"action","action":"SaveForm","icon_type":"1"}'))
+  ];
+  List<ActionStruct> get formActions => _formActions;
+  set formActions(List<ActionStruct> value) {
+    _formActions = value;
+    prefs.setStringList(
+        'ff_formActions', value.map((x) => x.serialize()).toList());
+  }
+
+  void addToFormActions(ActionStruct value) {
+    _formActions.add(value);
+    prefs.setStringList(
+        'ff_formActions', _formActions.map((x) => x.serialize()).toList());
+  }
+
+  void removeFromFormActions(ActionStruct value) {
+    _formActions.remove(value);
+    prefs.setStringList(
+        'ff_formActions', _formActions.map((x) => x.serialize()).toList());
+  }
+
+  void removeAtIndexFromFormActions(int index) {
+    _formActions.removeAt(index);
+    prefs.setStringList(
+        'ff_formActions', _formActions.map((x) => x.serialize()).toList());
+  }
+
+  void updateFormActionsAtIndex(
+    int index,
+    ActionStruct Function(ActionStruct) updateFn,
+  ) {
+    _formActions[index] = updateFn(_formActions[index]);
+    prefs.setStringList(
+        'ff_formActions', _formActions.map((x) => x.serialize()).toList());
+  }
+
+  void insertAtIndexInFormActions(int index, ActionStruct value) {
+    _formActions.insert(index, value);
+    prefs.setStringList(
+        'ff_formActions', _formActions.map((x) => x.serialize()).toList());
   }
 }
 

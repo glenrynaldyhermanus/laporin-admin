@@ -34,4 +34,7 @@ class ResponsesRow extends SupabaseDataRow {
 
   DateTime get finishAt => getField<DateTime>('finish_at')!;
   set finishAt(DateTime value) => setField<DateTime>('finish_at', value);
+
+  String get uuid => getField<String>('uuid')!;
+  set uuid(String value) => setField<String>('uuid', value);
 }
