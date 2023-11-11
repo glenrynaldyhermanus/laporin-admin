@@ -119,9 +119,7 @@ class _FieldOptionWidgetState extends State<FieldOptionWidget> {
                   widget.fieldOption?.id,
                 ),
               );
-              _model.updatePage(() {
-                _model.updated = true;
-              });
+              FFAppState().update(() {});
             },
           ),
         ].divide(const SizedBox(width: 16.0)),
