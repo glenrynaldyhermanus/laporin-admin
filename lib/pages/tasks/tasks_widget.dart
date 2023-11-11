@@ -85,6 +85,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                       wrapWithModel(
                         model: _model.headerModel,
                         updateCallback: () => setState(() {}),
+                        updateOnChange: true,
                         child: const HeaderWidget(),
                       ),
                       Expanded(

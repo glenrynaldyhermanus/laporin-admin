@@ -1,6 +1,7 @@
 import '/backend/supabase/supabase.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'field_option_model.dart';
@@ -35,7 +36,30 @@ class _FieldOptionWidgetState extends State<FieldOptionWidget> {
     _model.optionsController ??=
         TextEditingController(text: widget.fieldOption?.option);
     _model.optionsFocusNode ??= FocusNode();
-
+    _model.optionsFocusNode!.addListener(
+      () async {
+        if ((_model.optionsFocusNode?.hasFocus ?? false)) {
+          FFAppState().update(() {
+            FFAppState().formLoading = true;
+          });
+          return;
+        } else {
+          await FieldOptionsTable().update(
+            data: {
+              'option': _model.optionsController.text,
+            },
+            matchingRows: (rows) => rows.eq(
+              'id',
+              widget.fieldOption?.id,
+            ),
+          );
+          FFAppState().update(() {
+            FFAppState().formLoading = false;
+          });
+          return;
+        }
+      },
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
@@ -63,6 +87,27 @@ class _FieldOptionWidgetState extends State<FieldOptionWidget> {
             child: TextFormField(
               controller: _model.optionsController,
               focusNode: _model.optionsFocusNode,
+              onChanged: (_) => EasyDebounce.debounce(
+                '_model.optionsController',
+                const Duration(milliseconds: 2000),
+                () async {
+                  FFAppState().update(() {
+                    FFAppState().formLoading = true;
+                  });
+                  await FieldOptionsTable().update(
+                    data: {
+                      'option': _model.optionsController.text,
+                    },
+                    matchingRows: (rows) => rows.eq(
+                      'id',
+                      widget.fieldOption?.id,
+                    ),
+                  );
+                  FFAppState().update(() {
+                    FFAppState().formLoading = false;
+                  });
+                },
+              ),
               autofillHints: const [AutofillHints.email],
               obscureText: false,
               decoration: InputDecoration(

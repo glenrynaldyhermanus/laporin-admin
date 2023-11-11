@@ -53,6 +53,18 @@ class _FieldItemWidgetState extends State<FieldItemWidget> {
           });
           return;
         } else {
+          await FieldsTable().update(
+            data: {
+              'question': _model.nameController.text,
+            },
+            matchingRows: (rows) => rows.eq(
+              'id',
+              widget.field?.id,
+            ),
+          );
+          FFAppState().update(() {
+            FFAppState().formLoading = false;
+          });
           return;
         }
       },
@@ -123,7 +135,7 @@ class _FieldItemWidgetState extends State<FieldItemWidget> {
                               widget.fieldTypes!.map((e) => e.name).toList(),
                           onChanged: (val) async {
                             setState(() => _model.dropDownValue = val);
-                            setState(() {
+                            FFAppState().update(() {
                               FFAppState().formLoading = true;
                             });
                             await FieldsTable().update(
@@ -135,7 +147,7 @@ class _FieldItemWidgetState extends State<FieldItemWidget> {
                                 widget.field?.id,
                               ),
                             );
-                            setState(() {
+                            FFAppState().update(() {
                               FFAppState().formLoading = false;
                             });
                           },
@@ -162,7 +174,7 @@ class _FieldItemWidgetState extends State<FieldItemWidget> {
                         ),
                       ),
                       Expanded(
-                        flex: 1,
+                        flex: 2,
                         child: SizedBox(
                           width: double.infinity,
                           child: TextFormField(
@@ -189,7 +201,6 @@ class _FieldItemWidgetState extends State<FieldItemWidget> {
                                 });
                               },
                             ),
-                            autofillHints: const [AutofillHints.email],
                             obscureText: false,
                             decoration: InputDecoration(
                               labelText: 'Questions',
@@ -240,125 +251,160 @@ class _FieldItemWidgetState extends State<FieldItemWidget> {
                       true)
                     Padding(
                       padding:
-                          const EdgeInsetsDirectional.fromSTEB(24.0, 16.0, 0.0, 0.0),
+                          const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 0.0, 0.0),
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          FutureBuilder<List<FieldOptionsRow>>(
-                            future: (_model.requestCompleter ??=
-                                    Completer<List<FieldOptionsRow>>()
-                                      ..complete(FieldOptionsTable().queryRows(
-                                        queryFn: (q) => q.eq(
-                                          'field_id',
-                                          widget.field?.id,
+                          Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0.0, 16.0, 0.0, 0.0),
+                            child: FutureBuilder<List<FieldOptionsRow>>(
+                              future: (_model.requestCompleter ??= Completer<
+                                      List<FieldOptionsRow>>()
+                                    ..complete(FieldOptionsTable().queryRows(
+                                      queryFn: (q) => q.eq(
+                                        'field_id',
+                                        widget.field?.id,
+                                      ),
+                                    )))
+                                  .future,
+                              builder: (context, snapshot) {
+                                // Customize what your widget looks like when it's loading.
+                                if (!snapshot.hasData) {
+                                  return Center(
+                                    child: SizedBox(
+                                      width: 50.0,
+                                      height: 50.0,
+                                      child: SpinKitFoldingCube(
+                                        color: FlutterFlowTheme.of(context)
+                                            .primary,
+                                        size: 50.0,
+                                      ),
+                                    ),
+                                  );
+                                }
+                                List<FieldOptionsRow>
+                                    columnFieldOptionsRowList = snapshot.data!;
+                                return Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: List.generate(
+                                      columnFieldOptionsRowList.length,
+                                      (columnIndex) {
+                                    final columnFieldOptionsRow =
+                                        columnFieldOptionsRowList[columnIndex];
+                                    return Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        FieldOptionWidget(
+                                          key: Key(
+                                              'Keygni_${columnIndex}_of_${columnFieldOptionsRowList.length}'),
+                                          fieldOption: columnFieldOptionsRow,
                                         ),
-                                      )))
-                                .future,
-                            builder: (context, snapshot) {
-                              // Customize what your widget looks like when it's loading.
-                              if (!snapshot.hasData) {
-                                return Center(
-                                  child: SizedBox(
-                                    width: 50.0,
-                                    height: 50.0,
-                                    child: SpinKitFoldingCube(
-                                      color:
-                                          FlutterFlowTheme.of(context).primary,
-                                      size: 50.0,
+                                        FlutterFlowIconButton(
+                                          borderRadius: 20.0,
+                                          borderWidth: 1.0,
+                                          buttonSize: 40.0,
+                                          disabledIconColor: const Color(0x80636F81),
+                                          icon: Icon(
+                                            Icons.delete_forever_sharp,
+                                            color: FlutterFlowTheme.of(context)
+                                                .primaryText,
+                                            size: 20.0,
+                                          ),
+                                          onPressed: FFAppState().formLoading
+                                              ? null
+                                              : () async {
+                                                  await FieldOptionsTable()
+                                                      .delete(
+                                                    matchingRows: (rows) =>
+                                                        rows.eq(
+                                                      'id',
+                                                      columnFieldOptionsRow.id,
+                                                    ),
+                                                  );
+                                                  setState(() => _model
+                                                      .requestCompleter = null);
+                                                  await _model
+                                                      .waitForRequestCompleted();
+                                                },
+                                        ),
+                                      ].divide(const SizedBox(width: 24.0)),
+                                    );
+                                  }).divide(const SizedBox(height: 8.0)),
+                                );
+                              },
+                            ),
+                          ),
+                          Builder(
+                            builder: (context) {
+                              if (!FFAppState().formLoading) {
+                                return InkWell(
+                                  splashColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () async {
+                                    await FieldOptionsTable().insert({
+                                      'field_id': widget.field?.id,
+                                      'option': 'New Option',
+                                    });
+                                    setState(
+                                        () => _model.requestCompleter = null);
+                                    await _model.waitForRequestCompleted();
+                                  },
+                                  child: Container(
+                                    decoration: const BoxDecoration(),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Container(
+                                          width: 32.0,
+                                          height: 32.0,
+                                          decoration: BoxDecoration(
+                                            color: FlutterFlowTheme.of(context)
+                                                .accent1,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Icon(
+                                            Icons.add,
+                                            color: FlutterFlowTheme.of(context)
+                                                .primary,
+                                            size: 20.0,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Add Option',
+                                          style: FlutterFlowTheme.of(context)
+                                              .bodySmall,
+                                        ),
+                                      ].divide(const SizedBox(width: 8.0)),
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                return Container(
+                                  height: 32.0,
+                                  decoration: const BoxDecoration(),
+                                  child: Align(
+                                    alignment:
+                                        const AlignmentDirectional(-1.00, 0.00),
+                                    child: Text(
+                                      'Loading...',
+                                      style: FlutterFlowTheme.of(context)
+                                          .bodySmall
+                                          .override(
+                                            fontFamily: 'Montserrat',
+                                            color: FlutterFlowTheme.of(context)
+                                                .secondaryText,
+                                          ),
                                     ),
                                   ),
                                 );
                               }
-                              List<FieldOptionsRow> columnFieldOptionsRowList =
-                                  snapshot.data!;
-                              return Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: List.generate(
-                                    columnFieldOptionsRowList.length,
-                                    (columnIndex) {
-                                  final columnFieldOptionsRow =
-                                      columnFieldOptionsRowList[columnIndex];
-                                  return Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      FieldOptionWidget(
-                                        key: Key(
-                                            'Keygni_${columnIndex}_of_${columnFieldOptionsRowList.length}'),
-                                        fieldOption: columnFieldOptionsRow,
-                                      ),
-                                      FlutterFlowIconButton(
-                                        borderRadius: 20.0,
-                                        borderWidth: 1.0,
-                                        buttonSize: 40.0,
-                                        icon: Icon(
-                                          Icons.delete_forever_sharp,
-                                          color: FlutterFlowTheme.of(context)
-                                              .primaryText,
-                                          size: 20.0,
-                                        ),
-                                        onPressed: () async {
-                                          await FieldOptionsTable().delete(
-                                            matchingRows: (rows) => rows.eq(
-                                              'id',
-                                              columnFieldOptionsRow.id,
-                                            ),
-                                          );
-                                          setState(() =>
-                                              _model.requestCompleter = null);
-                                          await _model
-                                              .waitForRequestCompleted();
-                                        },
-                                      ),
-                                    ].divide(const SizedBox(width: 24.0)),
-                                  );
-                                }).divide(const SizedBox(height: 16.0)),
-                              );
                             },
                           ),
-                          InkWell(
-                            splashColor: Colors.transparent,
-                            focusColor: Colors.transparent,
-                            hoverColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            onTap: () async {
-                              await FieldOptionsTable().insert({
-                                'field_id': widget.field?.id,
-                                'option': 'New Option',
-                              });
-                              setState(() => _model.requestCompleter = null);
-                              await _model.waitForRequestCompleted();
-                            },
-                            child: Container(
-                              decoration: const BoxDecoration(),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    width: 32.0,
-                                    height: 32.0,
-                                    decoration: BoxDecoration(
-                                      color:
-                                          FlutterFlowTheme.of(context).accent1,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(
-                                      Icons.add,
-                                      color:
-                                          FlutterFlowTheme.of(context).primary,
-                                      size: 20.0,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Add Option',
-                                    style:
-                                        FlutterFlowTheme.of(context).bodySmall,
-                                  ),
-                                ].divide(const SizedBox(width: 8.0)),
-                              ),
-                            ),
-                          ),
-                        ].divide(const SizedBox(height: 16.0)),
+                        ].divide(const SizedBox(height: 8.0)),
                       ),
                     ),
                 ].divide(const SizedBox(height: 8.0)),

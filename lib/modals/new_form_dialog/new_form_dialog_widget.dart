@@ -188,6 +188,7 @@ class _NewFormDialogWidgetState extends State<NewFormDialogWidget> {
                                                 ],
                                                 obscureText: false,
                                                 decoration: InputDecoration(
+                                                  labelText: 'Form Name',
                                                   enabledBorder:
                                                       OutlineInputBorder(
                                                     borderSide: const BorderSide(
@@ -258,10 +259,12 @@ class _NewFormDialogWidgetState extends State<NewFormDialogWidget> {
                                   future: (_model.requestCompleter ??=
                                           Completer<List<FieldsRow>>()
                                             ..complete(FieldsTable().queryRows(
-                                              queryFn: (q) => q.eq(
-                                                'form_id',
-                                                widget.form?.id,
-                                              ),
+                                              queryFn: (q) => q
+                                                  .eq(
+                                                    'form_id',
+                                                    widget.form?.id,
+                                                  )
+                                                  .order('id', ascending: true),
                                             )))
                                       .future,
                                   builder: (context, snapshot) {
@@ -456,8 +459,17 @@ class _NewFormDialogWidgetState extends State<NewFormDialogWidget> {
                           padding: const EdgeInsetsDirectional.fromSTEB(
                               0.0, 16.0, 0.0, 16.0),
                           child: FFButtonWidget(
-                            onPressed: () {
-                              print('Button pressed ...');
+                            onPressed: () async {
+                              await FormsTable().update(
+                                data: {
+                                  'name': _model.nameController.text,
+                                },
+                                matchingRows: (rows) => rows.eq(
+                                  'id',
+                                  widget.form?.id,
+                                ),
+                              );
+                              Navigator.pop(context);
                             },
                             text: 'Save Form',
                             options: FFButtonOptions(
