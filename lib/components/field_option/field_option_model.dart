@@ -3,6 +3,10 @@ import 'field_option_widget.dart' show FieldOptionWidget;
 import 'package:flutter/material.dart';
 
 class FieldOptionModel extends FlutterFlowModel<FieldOptionWidget> {
+  ///  Local state fields for this component.
+
+  bool updated = false;
+
   ///  State fields for stateful widgets in this component.
 
   // State field(s) for options widget.

@@ -74,3 +74,16 @@ bool isEven(int index) {
     return false;
   }
 }
+
+FieldTypesRow? getFieldTypeFromList(
+  int typeId,
+  List<FieldTypesRow> fieldTypes,
+) {
+  // get field type by matching id from fieldTypes.id
+  for (final fieldType in fieldTypes) {
+    if (fieldType.id == typeId) {
+      return fieldType;
+    }
+  }
+  return null; // or throw an exception if desired
+}

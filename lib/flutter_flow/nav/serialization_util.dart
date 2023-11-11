@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import '/backend/schema/structs/index.dart';
+
 import '/backend/supabase/supabase.dart';
 
 import '../../flutter_flow/place.dart';
@@ -218,6 +219,8 @@ dynamic deserializeParam<T>(
             return FormsRow(data);
           case BusinessesRow:
             return BusinessesRow(data);
+          case FieldOptionsRow:
+            return FieldOptionsRow(data);
           case ResponseFieldsRow:
             return ResponseFieldsRow(data);
           case PagesRow:
@@ -234,6 +237,8 @@ dynamic deserializeParam<T>(
             return BusinessUsersRow(data);
           case FieldTypesRow:
             return FieldTypesRow(data);
+          case UserAttendancesRow:
+            return UserAttendancesRow(data);
           case TaskAssigneesRow:
             return TaskAssigneesRow(data);
           default:

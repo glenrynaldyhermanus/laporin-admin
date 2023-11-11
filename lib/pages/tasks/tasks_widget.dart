@@ -10,7 +10,6 @@ import 'package:aligned_tooltip/aligned_tooltip.dart';
 import 'package:aligned_dialog/aligned_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'tasks_model.dart';
 export 'tasks_model.dart';
@@ -410,18 +409,9 @@ class _TasksWidgetState extends State<TasksWidget> {
                                                                       .hasData) {
                                                                     return Center(
                                                                       child:
-                                                                          SizedBox(
-                                                                        width:
-                                                                            50.0,
-                                                                        height:
-                                                                            50.0,
-                                                                        child:
-                                                                            SpinKitFoldingCube(
-                                                                          color:
-                                                                              FlutterFlowTheme.of(context).primary,
-                                                                          size:
-                                                                              50.0,
-                                                                        ),
+                                                                          LinearProgressIndicator(
+                                                                        color: FlutterFlowTheme.of(context)
+                                                                            .primary,
                                                                       ),
                                                                     );
                                                                   }

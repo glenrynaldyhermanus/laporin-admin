@@ -139,8 +139,13 @@ class _AssignmentDialogWidgetState extends State<AssignmentDialogWidget> {
                               ),
                               FlutterFlowDropDown<String>(
                                 controller: _model.dropDownValueController ??=
-                                    FormFieldController<String>(null),
-                                options: _model.businessUsers
+                                    FormFieldController<String>(
+                                  _model.dropDownValue ??= 'Option 1',
+                                ),
+                                options: List<String>.from(_model.businessUsers
+                                    .map((e) => e.uuid)
+                                    .toList()),
+                                optionLabels: _model.businessUsers
                                     .map((e) => e.name)
                                     .toList(),
                                 onChanged: (val) =>
@@ -186,10 +191,25 @@ class _AssignmentDialogWidgetState extends State<AssignmentDialogWidget> {
                           const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 16.0),
                       child: FFButtonWidget(
                         onPressed: () async {
+                          _model.selectedUser = await actions.getUserByUuid(
+                            _model.dropDownValue!,
+                          );
                           await TaskAssigneesTable().insert({
                             'task_id': widget.task?.id,
+                            'user_id': _model.selectedUser?.id,
                           });
+                          await TasksTable().update(
+                            data: {
+                              'status': 1,
+                            },
+                            matchingRows: (rows) => rows.eq(
+                              'id',
+                              widget.task?.id,
+                            ),
+                          );
                           Navigator.pop(context);
+
+                          setState(() {});
                         },
                         text: 'Assign',
                         options: FFButtonOptions(

@@ -4,6 +4,7 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/modals/invitation_dialog/invitation_dialog_widget.dart';
+import '/modals/new_form_dialog/new_form_dialog_widget.dart';
 import '/modals/new_task_dialog/new_task_dialog_widget.dart';
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:aligned_dialog/aligned_dialog.dart';
@@ -111,7 +112,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
             color: FlutterFlowTheme.of(context).accent1,
           ),
           Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 0.0),
+            padding: const EdgeInsetsDirectional.fromSTEB(32.0, 0.0, 32.0, 0.0),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -159,16 +160,34 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                   'name': 'New Form',
                                 });
                                 shouldSetState = true;
-
-                                context.pushNamed(
-                                  'FormBuilder',
-                                  queryParameters: {
-                                    'form': serializeParam(
-                                      _model.form,
-                                      ParamType.SupabaseRow,
-                                    ),
-                                  }.withoutNulls,
-                                );
+                                _model.page = await PagesTable().insert({
+                                  'form_id': _model.form?.id,
+                                  'name': 'Page One',
+                                });
+                                shouldSetState = true;
+                                await FieldsTable().insert({
+                                  'field_type_id': 1,
+                                  'page_id': _model.page?.id,
+                                  'form_id': _model.form?.id,
+                                  'question': 'New Question',
+                                });
+                                await showAlignedDialog(
+                                  context: context,
+                                  isGlobal: true,
+                                  avoidOverflow: false,
+                                  targetAnchor: const AlignmentDirectional(0.0, 0.0)
+                                      .resolve(Directionality.of(context)),
+                                  followerAnchor: const AlignmentDirectional(0.0, 0.0)
+                                      .resolve(Directionality.of(context)),
+                                  builder: (dialogContext) {
+                                    return Material(
+                                      color: Colors.transparent,
+                                      child: NewFormDialogWidget(
+                                        form: _model.form!,
+                                      ),
+                                    );
+                                  },
+                                ).then((value) => setState(() {}));
 
                                 if (shouldSetState) setState(() {});
                                 return;
@@ -266,7 +285,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                             ),
                           ),
                         );
-                      }).divide(const SizedBox(width: 8.0)),
+                      }).divide(const SizedBox(width: 16.0)),
                     );
                   },
                 ),

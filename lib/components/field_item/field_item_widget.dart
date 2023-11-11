@@ -4,10 +4,12 @@ import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/form_field_controller.dart';
+import '/flutter_flow/custom_functions.dart' as functions;
+import 'dart:async';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'field_item_model.dart';
 export 'field_item_model.dart';
@@ -58,43 +60,84 @@ class _FieldItemWidgetState extends State<FieldItemWidget> {
   Widget build(BuildContext context) {
     context.watch<FFAppState>();
 
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Expanded(
-          child: Container(
-            width: MediaQuery.sizeOf(context).width * 1.0,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.0),
-              border: Border.all(
-                color: _model.active
-                    ? FlutterFlowTheme.of(context).secondary
-                    : FlutterFlowTheme.of(context).primary,
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.field!.id.toString(),
+    return Container(
+      width: MediaQuery.sizeOf(context).width * 1.0,
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(8.0),
+        border: Border.all(
+          color: _model.active
+              ? FlutterFlowTheme.of(context).secondary
+              : FlutterFlowTheme.of(context).primary,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: Text(
+                    widget.field!.uuid,
                     style: FlutterFlowTheme.of(context).bodySmall.override(
                           fontFamily: 'Montserrat',
                           fontStyle: FontStyle.italic,
                         ),
                   ),
-                  Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      FlutterFlowDropDown<String>(
+                ),
+                FlutterFlowIconButton(
+                  borderRadius: 20.0,
+                  borderWidth: 1.0,
+                  buttonSize: 48.0,
+                  icon: Icon(
+                    Icons.delete_forever,
+                    color: FlutterFlowTheme.of(context).error,
+                    size: 24.0,
+                  ),
+                  onPressed: () async {
+                    await FieldsTable().delete(
+                      matchingRows: (rows) => rows.eq(
+                        'id',
+                        widget.field?.id,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                      child: FlutterFlowDropDown<int>(
                         controller: _model.dropDownValueController ??=
-                            FormFieldController<String>(null),
-                        options: widget.fieldTypes!.map((e) => e.name).toList(),
-                        onChanged: (val) =>
-                            setState(() => _model.dropDownValue = val),
+                            FormFieldController<int>(
+                          _model.dropDownValue ??= widget.field?.fieldTypeId,
+                        ),
+                        options: List<int>.from(
+                            widget.fieldTypes!.map((e) => e.id).toList()),
+                        optionLabels:
+                            widget.fieldTypes!.map((e) => e.name).toList(),
+                        onChanged: (val) async {
+                          setState(() => _model.dropDownValue = val);
+                          await FieldsTable().update(
+                            data: {
+                              'field_type_id': _model.dropDownValue,
+                            },
+                            matchingRows: (rows) => rows.eq(
+                              'id',
+                              widget.field?.id,
+                            ),
+                          );
+                        },
                         width: 300.0,
                         height: 50.0,
                         textStyle: FlutterFlowTheme.of(context).bodyMedium,
@@ -116,7 +159,10 @@ class _FieldItemWidgetState extends State<FieldItemWidget> {
                         isSearchable: false,
                         isMultiSelect: false,
                       ),
-                      SizedBox(
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: SizedBox(
                         width: double.infinity,
                         child: TextFormField(
                           controller: _model.nameController,
@@ -171,99 +217,116 @@ class _FieldItemWidgetState extends State<FieldItemWidget> {
                               .asValidator(context),
                         ),
                       ),
-                      Padding(
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                wrapWithModel(
-                                  model: _model.fieldOptionModel,
-                                  updateCallback: () => setState(() {}),
-                                  child: const FieldOptionWidget(),
-                                ),
-                              ].divide(const SizedBox(width: 16.0)),
-                            ),
-                            FFButtonWidget(
-                              onPressed: () async {},
-                              text: 'Add Option',
-                              options: FFButtonOptions(
-                                height: 40.0,
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    24.0, 0.0, 24.0, 0.0),
-                                iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                    0.0, 0.0, 0.0, 0.0),
-                                color: FlutterFlowTheme.of(context)
-                                    .primaryBackground,
-                                textStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .override(
-                                      fontFamily: 'Montserrat',
-                                      color:
-                                          FlutterFlowTheme.of(context).tertiary,
-                                    ),
-                                elevation: 0.0,
-                                borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context).tertiary,
-                                  width: 1.0,
-                                ),
-                                borderRadius: BorderRadius.circular(24.0),
-                              ),
-                            ),
-                          ].divide(const SizedBox(width: 8.0)),
-                        ),
-                      ),
-                    ].divide(const SizedBox(height: 8.0)),
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      FFButtonWidget(
-                        onPressed: () async {},
-                        text: 'Save Field',
-                        options: FFButtonOptions(
-                          height: 40.0,
-                          padding: const EdgeInsetsDirectional.fromSTEB(
-                              24.0, 0.0, 24.0, 0.0),
-                          iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                              0.0, 0.0, 0.0, 0.0),
-                          color: FlutterFlowTheme.of(context).tertiary,
-                          textStyle:
-                              FlutterFlowTheme.of(context).titleSmall.override(
-                                    fontFamily: 'Montserrat',
-                                    color: Colors.white,
+                    ),
+                  ].divide(const SizedBox(width: 16.0)),
+                ),
+                if (functions
+                        .getFieldTypeFromList(
+                            _model.dropDownValue!, widget.fieldTypes!.toList())
+                        ?.hasOption ==
+                    true)
+                  Padding(
+                    padding:
+                        const EdgeInsetsDirectional.fromSTEB(24.0, 16.0, 0.0, 0.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        FutureBuilder<List<FieldOptionsRow>>(
+                          future: (_model.requestCompleter ??=
+                                  Completer<List<FieldOptionsRow>>()
+                                    ..complete(FieldOptionsTable().queryRows(
+                                      queryFn: (q) => q.eq(
+                                        'field_id',
+                                        widget.field?.id,
+                                      ),
+                                    )))
+                              .future,
+                          builder: (context, snapshot) {
+                            // Customize what your widget looks like when it's loading.
+                            if (!snapshot.hasData) {
+                              return Center(
+                                child: SizedBox(
+                                  width: 50.0,
+                                  height: 50.0,
+                                  child: SpinKitFoldingCube(
+                                    color: FlutterFlowTheme.of(context).primary,
+                                    size: 50.0,
                                   ),
-                          elevation: 0.0,
-                          borderSide: const BorderSide(
-                            color: Colors.transparent,
-                            width: 1.0,
-                          ),
-                          borderRadius: BorderRadius.circular(24.0),
+                                ),
+                              );
+                            }
+                            List<FieldOptionsRow> columnFieldOptionsRowList =
+                                snapshot.data!;
+                            return Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: List.generate(
+                                  columnFieldOptionsRowList.length,
+                                  (columnIndex) {
+                                final columnFieldOptionsRow =
+                                    columnFieldOptionsRowList[columnIndex];
+                                return FieldOptionWidget(
+                                  key: Key(
+                                      'Keygni_${columnIndex}_of_${columnFieldOptionsRowList.length}'),
+                                  fieldOption: columnFieldOptionsRow,
+                                );
+                              }).divide(const SizedBox(height: 16.0)),
+                            );
+                          },
                         ),
-                      ),
-                    ],
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () async {
+                            await FieldOptionsTable().insert({
+                              'field_id': widget.field?.id,
+                              'option': 'New Option',
+                            });
+                            setState(() => _model.requestCompleter = null);
+                            await _model.waitForRequestCompleted();
+                          },
+                          child: Container(
+                            decoration: const BoxDecoration(),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 40.0,
+                                  height: 40.0,
+                                  decoration: BoxDecoration(
+                                    color: FlutterFlowTheme.of(context).accent1,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.add,
+                                    color: FlutterFlowTheme.of(context).primary,
+                                    size: 24.0,
+                                  ),
+                                ),
+                                Text(
+                                  'Add Option',
+                                  style: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .override(
+                                        fontFamily: 'Montserrat',
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                      ),
+                                ),
+                              ].divide(const SizedBox(width: 8.0)),
+                            ),
+                          ),
+                        ),
+                      ].divide(const SizedBox(height: 16.0)),
+                    ),
                   ),
-                ].divide(const SizedBox(height: 24.0)),
-              ),
+              ].divide(const SizedBox(height: 8.0)),
             ),
-          ),
+          ].divide(const SizedBox(height: 8.0)),
         ),
-        FlutterFlowIconButton(
-          borderRadius: 20.0,
-          borderWidth: 1.0,
-          buttonSize: 48.0,
-          icon: Icon(
-            Icons.delete_forever,
-            color: FlutterFlowTheme.of(context).error,
-            size: 32.0,
-          ),
-          onPressed: () async {},
-        ),
-      ].divide(const SizedBox(width: 24.0)).around(const SizedBox(width: 24.0)),
+      ),
     );
   }
 }

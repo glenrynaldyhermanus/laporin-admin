@@ -5,6 +5,7 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/form_field_controller.dart';
+import '/custom_code/actions/index.dart' as actions;
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
@@ -382,8 +383,14 @@ class _NewTaskDialogWidgetState extends State<NewTaskDialogWidget> {
                                   FlutterFlowDropDown<String>(
                                     controller:
                                         _model.dropDownValueController ??=
-                                            FormFieldController<String>(null),
-                                    options: materialDialog4FormsRowList
+                                            FormFieldController<String>(
+                                      _model.dropDownValue ??= '',
+                                    ),
+                                    options: List<String>.from(
+                                        materialDialog4FormsRowList
+                                            .map((e) => e.uuid)
+                                            .toList()),
+                                    optionLabels: materialDialog4FormsRowList
                                         .map((e) => e.name)
                                         .toList(),
                                     onChanged: (val) => setState(
@@ -535,6 +542,9 @@ class _NewTaskDialogWidgetState extends State<NewTaskDialogWidget> {
                               0.0, 16.0, 0.0, 16.0),
                           child: FFButtonWidget(
                             onPressed: () async {
+                              _model.selectedForm = await actions.getFormByUuid(
+                                _model.dropDownValue!,
+                              );
                               await TasksTable().insert({
                                 'name': _model.nameController.text,
                                 'description': _model.descController.text,
@@ -544,8 +554,11 @@ class _NewTaskDialogWidgetState extends State<NewTaskDialogWidget> {
                                 'due_at':
                                     supaSerialize<DateTime>(_model.datePicked),
                                 'status': 0,
+                                'form_id': _model.selectedForm?.id,
                               });
                               Navigator.pop(context);
+
+                              setState(() {});
                             },
                             text: 'Save Task',
                             options: FFButtonOptions(
