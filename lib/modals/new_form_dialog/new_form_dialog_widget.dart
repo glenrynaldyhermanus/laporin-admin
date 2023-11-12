@@ -54,6 +54,9 @@ class _NewFormDialogWidgetState extends State<NewFormDialogWidget> {
   Widget build(BuildContext context) {
     context.watch<FFAppState>();
 
+    print('build');
+    print(FFAppState().formLoading);
+
     return Align(
       alignment: const AlignmentDirectional(0.00, 0.00),
       child: Padding(
