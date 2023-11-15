@@ -169,10 +169,28 @@ class _HomeWidgetState extends State<HomeWidget> {
                                                             width: 16.0)),
                                                   ),
                                                 ),
-                                                FutureBuilder<List<UsersRow>>(
+                                                FutureBuilder<
+                                                    List<
+                                                        UserAttendancesViewRow>>(
                                                   future:
-                                                      UsersTable().queryRows(
-                                                    queryFn: (q) => q,
+                                                      UserAttendancesViewTable()
+                                                          .queryRows(
+                                                    queryFn: (q) => q
+                                                        .gt(
+                                                          'created_at',
+                                                          supaSerialize<
+                                                                  DateTime>(
+                                                              functions
+                                                                  .startingDate(
+                                                                      getCurrentTimestamp)),
+                                                        )
+                                                        .lte(
+                                                          'created_at',
+                                                          supaSerialize<
+                                                                  DateTime>(
+                                                              functions.endingDate(
+                                                                  getCurrentTimestamp)),
+                                                        ),
                                                   ),
                                                   builder: (context, snapshot) {
                                                     // Customize what your widget looks like when it's loading.
@@ -186,18 +204,18 @@ class _HomeWidgetState extends State<HomeWidget> {
                                                         ),
                                                       );
                                                     }
-                                                    List<UsersRow>
-                                                        columnUsersRowList =
+                                                    List<UserAttendancesViewRow>
+                                                        columnUserAttendancesViewRowList =
                                                         snapshot.data!;
                                                     return Column(
                                                       mainAxisSize:
                                                           MainAxisSize.max,
                                                       children: List.generate(
-                                                          columnUsersRowList
+                                                          columnUserAttendancesViewRowList
                                                               .length,
                                                           (columnIndex) {
-                                                        final columnUsersRow =
-                                                            columnUsersRowList[
+                                                        final columnUserAttendancesViewRow =
+                                                            columnUserAttendancesViewRowList[
                                                                 columnIndex];
                                                         return Container(
                                                           width:
@@ -243,7 +261,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                                                                 4.0),
                                                                             child:
                                                                                 Text(
-                                                                              columnUsersRow.name,
+                                                                              columnUserAttendancesViewRow.name!,
                                                                               style: FlutterFlowTheme.of(context).bodyLarge,
                                                                             )),
                                                                     offset: 4.0,
@@ -274,8 +292,8 @@ class _HomeWidgetState extends State<HomeWidget> {
                                                                         TooltipTriggerMode
                                                                             .tap,
                                                                     child: Text(
-                                                                      columnUsersRow
-                                                                          .name,
+                                                                      columnUserAttendancesViewRow
+                                                                          .name!,
                                                                       maxLines:
                                                                           1,
                                                                       style: FlutterFlowTheme.of(

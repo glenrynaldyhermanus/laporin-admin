@@ -1,28 +1,31 @@
 import '../database.dart';
 
-class UserAttendancesTable extends SupabaseTable<UserAttendancesRow> {
+class UserAttendancesViewTable extends SupabaseTable<UserAttendancesViewRow> {
   @override
-  String get tableName => 'user_attendances';
+  String get tableName => 'user_attendances_view';
 
   @override
-  UserAttendancesRow createRow(Map<String, dynamic> data) =>
-      UserAttendancesRow(data);
+  UserAttendancesViewRow createRow(Map<String, dynamic> data) =>
+      UserAttendancesViewRow(data);
 }
 
-class UserAttendancesRow extends SupabaseDataRow {
-  UserAttendancesRow(super.data);
+class UserAttendancesViewRow extends SupabaseDataRow {
+  UserAttendancesViewRow(super.data);
 
   @override
-  SupabaseTable get table => UserAttendancesTable();
+  SupabaseTable get table => UserAttendancesViewTable();
 
-  int get id => getField<int>('id')!;
-  set id(int value) => setField<int>('id', value);
+  int? get id => getField<int>('id');
+  set id(int? value) => setField<int>('id', value);
 
-  DateTime get createdAt => getField<DateTime>('created_at')!;
-  set createdAt(DateTime value) => setField<DateTime>('created_at', value);
+  String? get name => getField<String>('name');
+  set name(String? value) => setField<String>('name', value);
 
-  int get userId => getField<int>('user_id')!;
-  set userId(int value) => setField<int>('user_id', value);
+  String? get phone => getField<String>('phone');
+  set phone(String? value) => setField<String>('phone', value);
+
+  String? get email => getField<String>('email');
+  set email(String? value) => setField<String>('email', value);
 
   DateTime? get clockedInAt => getField<DateTime>('clocked_in_at');
   set clockedInAt(DateTime? value) =>
@@ -53,4 +56,7 @@ class UserAttendancesRow extends SupabaseDataRow {
   double? get geoLongitudeOut => getField<double>('geo_longitude_out');
   set geoLongitudeOut(double? value) =>
       setField<double>('geo_longitude_out', value);
+
+  DateTime? get createdAt => getField<DateTime>('created_at');
+  set createdAt(DateTime? value) => setField<DateTime>('created_at', value);
 }
